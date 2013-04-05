@@ -1,0 +1,184 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{557A30E5-2C49-494D-A01B-7496E340BA4C}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>inCapsulam</RootNamespace>
+    <AssemblyName>inCapsulam</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="ZedGraph, Version=5.1.5.28844, Culture=neutral, PublicKeyToken=02a83cbd123fcd60, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Extensions\ZedGraph.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Optimization\Targets\AssignmentTaskTarget.cs" />
+    <Compile Include="form_Main.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="form_Main.Designer.cs">
+      <DependentUpon>form_Main.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Optimization\Targets\ITarget.cs" />
+    <Compile Include="Optimization\Targets\PreDefinedTarget.cs" />
+    <Compile Include="Task.cs" />
+    <Compile Include="Extensions\info.lundin.math.cs" />
+    <Compile Include="Extensions\ObjectCopier.cs" />
+    <Compile Include="Optimization\BlackBox.cs" />
+    <Compile Include="Optimization\BlackBoxScalar.cs" />
+    <Compile Include="Optimization\Function.cs" />
+    <Compile Include="Optimization\Methods\GaussZeidelMethod.cs" />
+    <Compile Include="Optimization\Methods\GeneticApproachMethod.cs" />
+    <Compile Include="Optimization\Methods\ScalarIntervalDividingMethod.cs" />
+    <Compile Include="Optimization\Various.cs" />
+    <Compile Include="Optimization\Vector.cs" />
+    <Compile Include="UserControlBlur.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControlBlur.Designer.cs">
+      <DependentUpon>UserControlBlur.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControlTasksList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControlTasksList.Designer.cs">
+      <DependentUpon>UserControlTasksList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControlConstraintsManager.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControlConstraintsManager.Designer.cs">
+      <DependentUpon>UserControlConstraintsManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControlEmpty.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControlGASettings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControlGASettings.Designer.cs">
+      <DependentUpon>UserControlGASettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControlPOSettings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControlPOSettings.Designer.cs">
+      <DependentUpon>UserControlPOSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControlPredefinedTarget.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControlPredefinedTarget.Designer.cs">
+      <DependentUpon>UserControlPredefinedTarget.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserControlSingleResult.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControlSingleResult.Designer.cs">
+      <DependentUpon>UserControlSingleResult.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControlUserDefinedTarget.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControlUserDefinedTarget.Designer.cs">
+      <DependentUpon>UserControlUserDefinedTarget.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Optimization\Targets\UserDefinedTarget.cs" />
+    <EmbeddedResource Include="form_Main.resx">
+      <DependentUpon>form_Main.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControlBlur.resx">
+      <DependentUpon>UserControlBlur.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControlTasksList.resx">
+      <DependentUpon>UserControlTasksList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControlConstraintsManager.resx">
+      <DependentUpon>UserControlConstraintsManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControlEmpty.resx">
+      <DependentUpon>UserControlEmpty.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControlGASettings.resx">
+      <DependentUpon>UserControlGASettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControlPOSettings.resx">
+      <DependentUpon>UserControlPOSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControlPredefinedTarget.resx">
+      <DependentUpon>UserControlPredefinedTarget.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="UserControlSingleResult.resx">
+      <DependentUpon>UserControlSingleResult.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControlUserDefinedTarget.resx">
+      <DependentUpon>UserControlUserDefinedTarget.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
