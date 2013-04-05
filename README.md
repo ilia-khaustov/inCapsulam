@@ -1,7 +1,7 @@
 inCapsulam
 ==========
 
-[RU] Utilite for statistical analysis of genetic approach in optimization.
+[RU] Utility for statistical analysis of genetic approach in optimization.
 
 Written, compiled, built and tested with Visual Studio 2012 Express.
 
