@@ -66,7 +66,8 @@
             this.leftBorderInterval = new System.Windows.Forms.NumericUpDown();
             this.iterationsMax = new System.Windows.Forms.NumericUpDown();
             this.rightBorderInterval = new System.Windows.Forms.NumericUpDown();
-            this.useThreading = new System.Windows.Forms.CheckBox();
+            this.threadsCount = new System.Windows.Forms.NumericUpDown();
+            this.label17 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.objectiveFunctionMin)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bitsCount)).BeginInit();
@@ -78,11 +79,13 @@
             ((System.ComponentModel.ISupportInitialize)(this.leftBorderInterval)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.iterationsMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rightBorderInterval)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.threadsCount)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.useThreading);
+            this.panel1.Controls.Add(this.label17);
+            this.panel1.Controls.Add(this.threadsCount);
             this.panel1.Controls.Add(this.useChildSelection);
             this.panel1.Controls.Add(this.childSelectionType);
             this.panel1.Controls.Add(this.label16);
@@ -122,7 +125,7 @@
             this.panel1.Controls.Add(this.rightBorderInterval);
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(437, 520);
+            this.panel1.Size = new System.Drawing.Size(437, 502);
             this.panel1.TabIndex = 30;
             // 
             // useChildSelection
@@ -207,7 +210,7 @@
             // 
             // saveButton
             // 
-            this.saveButton.Location = new System.Drawing.Point(162, 466);
+            this.saveButton.Location = new System.Drawing.Point(162, 473);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(98, 23);
             this.saveButton.TabIndex = 30;
@@ -604,15 +607,32 @@
             0});
             this.rightBorderInterval.ValueChanged += new System.EventHandler(this.rightBorderInterval_ValueChanged);
             // 
-            // useThreading
+            // threadsCount
             // 
-            this.useThreading.AutoSize = true;
-            this.useThreading.Location = new System.Drawing.Point(162, 443);
-            this.useThreading.Name = "useThreading";
-            this.useThreading.Size = new System.Drawing.Size(187, 19);
-            this.useThreading.TabIndex = 38;
-            this.useThreading.Text = "Многопоточное вычисление";
-            this.useThreading.UseVisualStyleBackColor = true;
+            this.threadsCount.Location = new System.Drawing.Point(162, 446);
+            this.threadsCount.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.threadsCount.Name = "threadsCount";
+            this.threadsCount.Size = new System.Drawing.Size(98, 23);
+            this.threadsCount.TabIndex = 38;
+            this.threadsCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.threadsCount.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(34, 448);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(123, 15);
+            this.label17.TabIndex = 39;
+            this.label17.Text = "Количество потоков:";
             // 
             // UserControlGASettings
             // 
@@ -622,7 +642,7 @@
             this.Controls.Add(this.panel1);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Name = "UserControlGASettings";
-            this.Size = new System.Drawing.Size(444, 527);
+            this.Size = new System.Drawing.Size(444, 507);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.objectiveFunctionMin)).EndInit();
@@ -635,6 +655,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.leftBorderInterval)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.iterationsMax)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.rightBorderInterval)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.threadsCount)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -679,6 +700,7 @@
         private System.Windows.Forms.CheckBox useChildSelection;
         private System.Windows.Forms.ComboBox childSelectionType;
         private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.CheckBox useThreading;
+        private System.Windows.Forms.NumericUpDown threadsCount;
+        private System.Windows.Forms.Label label17;
     }
 }

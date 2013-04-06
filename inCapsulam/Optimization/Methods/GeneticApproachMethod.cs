@@ -92,6 +92,10 @@ namespace inCapsulam.Optimization.Methods
             /// Predicted minimum value of objective function. Used in fitness estimation.
             /// </summary>
             public double ObjectiveFunctionMinValue = 0;
+            /// <summary>
+            /// Number of threads to use in fitness calculation
+            /// </summary>
+            public int ThreadsCount = 1;
 
             private double _Precision = 0;
             private short _DigitsAfterPoint;
@@ -113,7 +117,6 @@ namespace inCapsulam.Optimization.Methods
             public bool UseLocalTournament;
             public bool UsePositiveOnly;
             public bool UseChildSelection;
-            public bool UseThreading;
 
             public Settings() { }
         }
@@ -329,37 +332,28 @@ namespace inCapsulam.Optimization.Methods
                         solutions[i].SetFitness();
                     }
                 }
-
                 Interlocked.Decrement(ref threadsRunning);
             }
 
             void CalculateFitness(Solution[] solutions)
             {
-                if (current.UseThreading)
-                {
-                    List<Solution> odd, even;
-                    odd = new List<Solution>();
-                    even = new List<Solution>();
-                    for (int i = 0; i < solutions.Length; i++)
-                    {
-                        if (i % 2 == 1) odd.Add(solutions[i]);
-                        else even.Add(solutions[i]);
-                    }
-                    ThreadPool.QueueUserWorkItem(new WaitCallback(CalculateFitnessOf), odd.ToArray());
-                    Interlocked.Increment(ref threadsRunning);
+                List<Solution>[] subPopulations = new List<Solution>[current.ThreadsCount];
 
-                    ThreadPool.QueueUserWorkItem(new WaitCallback(CalculateFitnessOf), even.ToArray());
-                    Interlocked.Increment(ref threadsRunning);
-
-                    while (threadsRunning > 0) { }
-                }
-                else
+                for (int i = 0; i < solutions.Length; i++)
                 {
-                    for (int i = 0; i < solutions.Length; i++)
-                    {
-                        solutions[i].SetFitness();
-                    }
+                    int index = (i + 1) % current.ThreadsCount;
+                    if (object.Equals(subPopulations[index], null))
+                        subPopulations[index] = new List<Solution>();
+                    subPopulations[index].Add(solutions[i]);
                 }
+
+                for (int i = 0; i < subPopulations.Length; i++)
+                {
+                    ThreadPool.QueueUserWorkItem(new WaitCallback(CalculateFitnessOf), subPopulations[i].ToArray());
+                    Interlocked.Increment(ref threadsRunning);
+                }
+
+                while (threadsRunning > 0) { }
             }
 
             void Run()

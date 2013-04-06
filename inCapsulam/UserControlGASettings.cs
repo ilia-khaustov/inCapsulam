@@ -48,7 +48,7 @@ namespace inCapsulam
             objectiveFunctionMin.Value = (decimal)settings.ObjectiveFunctionMinValue;
             useChildSelection.Checked = settings.UseChildSelection;
             childSelectionType.SelectedIndex = settings.ChildSelectionMode;
-            useThreading.Checked = settings.UseThreading;
+            threadsCount.Value = (decimal)settings.ThreadsCount;
         }
 
         private void saveButton_Click(object sender, EventArgs e)
@@ -74,7 +74,7 @@ namespace inCapsulam
             settings.ObjectiveFunctionMinValue = (double)objectiveFunctionMin.Value;
             settings.UseChildSelection = useChildSelection.Checked;
             settings.ChildSelectionMode = (short)childSelectionType.SelectedIndex;
-            settings.UseThreading = useThreading.Checked;
+            settings.ThreadsCount = (int)threadsCount.Value;
             Program.TaskCurrent.ga_Settings = settings;
         }
 

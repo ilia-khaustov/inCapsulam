@@ -115,7 +115,7 @@ namespace inCapsulam
             data += "Используется элитизм" + "\t";
             data += "Используется грей-кодирование" + "\t";
             data += "Полученное значение ЦФ" + "\t";
-            data += "Используется многопотоковое вычисление" + "\t";
+            data += "Количество потоков вычислений" + "\t";
             data += "Затраченное время (мс)";
             data += "\n";
 
@@ -144,7 +144,7 @@ namespace inCapsulam
             data += (ga_Process.current.UseElitism ? "1" : "0") + "\t";
             data += (ga_Process.current.UseGreyCode ? "1" : "0") + "\t";
             data += ga_Process.Logging_BestValue.Last() + "\t";
-            data += (ga_Process.current.UseThreading ? "1" : "0") + "\t";
+            data += ga_Process.current.ThreadsCount + "\t";
             data += ga_Process.Logging_TimeElapsed;
             data += "\n";
 
@@ -432,7 +432,7 @@ namespace inCapsulam
                 r += "Метод Гаусса-Зейделя";
             }
             r += "\nКоэффициент пост-оптимизации: " + ga_Settings.PostOptimizationCoefficient;
-            r += "\nМногопотоковые вычисления: " + (ga_Settings.UseThreading ? "Да" : "Нет");
+            r += "\nКоличество потоков вычислений: " + ga_Settings.ThreadsCount;
             return r;
         }
 
