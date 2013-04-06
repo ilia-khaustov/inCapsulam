@@ -321,30 +321,29 @@ namespace inCapsulam.Optimization.Methods
 
             void CalculateFitnessOf(object info)
             {
-                int[] indexes = (int[])info;
-                for (int i = 0; i < indexes.Length; i++)
+                Solution[] solutions = (Solution[])info;
+                for (int i = 0; i < solutions.Length; i++)
                 {
-                    lock (Population[indexes[i]])
+                    lock (solutions[i])
                     {
-                        Population[indexes[i]].SetFitness();
+                        solutions[i].SetFitness();
                     }
                 }
 
                 Interlocked.Decrement(ref threadsRunning);
             }
 
-            void CalculateFitness()
+            void CalculateFitness(Solution[] solutions)
             {
                 if (current.UseThreading)
                 {
-                    List<int> odd, even;
-                    odd = new List<int>();
-                    even = new List<int>();
-                    for (int i = 0; i < Population.Length; i++)
+                    List<Solution> odd, even;
+                    odd = new List<Solution>();
+                    even = new List<Solution>();
+                    for (int i = 0; i < solutions.Length; i++)
                     {
-                        if (i % 2 == 1) odd.Add(i);
-                        else even.Add(i);
-
+                        if (i % 2 == 1) odd.Add(solutions[i]);
+                        else even.Add(solutions[i]);
                     }
                     ThreadPool.QueueUserWorkItem(new WaitCallback(CalculateFitnessOf), odd.ToArray());
                     Interlocked.Increment(ref threadsRunning);
@@ -356,30 +355,34 @@ namespace inCapsulam.Optimization.Methods
                 }
                 else
                 {
-                    for (int i = 0; i < Population.Length; i++)
+                    for (int i = 0; i < solutions.Length; i++)
                     {
-                        Population[i].SetFitness();
+                        solutions[i].SetFitness();
                     }
                 }
             }
 
             void Run()
             {
-                CalculateFitness();
+                CalculateFitness(Population);
+                Log();
+
                 if (current.UseLocalTournament) CalculateProximityMatrix();
                 if (current.PenaltyMode == Settings.PenaltyAdaptive) CalculateViolationsCount();
                 CalculateAverageFitness();
 
-                int[] parents = ParentSelection(Population);
-                Logging_ParentsCount.Add(parents.Length);
+                int[] parentsIds = ParentSelection(Population);
+                Logging_ParentsCount.Add(parentsIds.Length);
 
-                if (parents.Length < 2) return;
-                Solution[] childs = Crossover(parents);
+                if (parentsIds.Length < 2) return;
+                Solution[] childs = Crossover(parentsIds);
 
                 for (int i = 0; i < childs.Length; i++)
                 {
                     childs[i].Mutate();
                 }
+
+                CalculateFitness(childs);
 
                 if (current.UseChildSelection)
                 {
@@ -391,9 +394,10 @@ namespace inCapsulam.Optimization.Methods
                     }
                     PostSelection(childsNew);
                 }
-                else PostSelection(childs);
-
-                Log();
+                else
+                {
+                    PostSelection(childs);
+                }
             }
 
             void Log()
@@ -1215,7 +1219,6 @@ namespace inCapsulam.Optimization.Methods
                         changed = MutationReal();
                         break;
                 }
-                if (changed) SetFitness();
             }
 
             bool MutationBoolean()
@@ -1273,7 +1276,6 @@ namespace inCapsulam.Optimization.Methods
                         break;
                 }
                 if (object.Equals(sNew, null)) sNew = CrossoverTwoPoints(s1, s2);
-                sNew.SetFitness();
                 return sNew;
             }
 
