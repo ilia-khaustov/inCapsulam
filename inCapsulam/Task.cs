@@ -11,6 +11,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using inCapsulam.Optimization;
 using inCapsulam.Optimization.Methods;
+using inCapsulam.Optimization.Targets;
 
 namespace inCapsulam
 {
@@ -19,6 +20,7 @@ namespace inCapsulam
     {
         public const short TargetType_UserDefinedFunction = 0;
         public const short TargetType_PreDefinedFunction = 1;
+        public const short TargetType_JavaScriptCode = 2;
 
         public int TimesToRun = 1;
 
@@ -294,7 +296,7 @@ namespace inCapsulam
             string r = "";
 
             r += "Количество переменных:\n\t" + Target.Parameters.Length + "\n";
-            r += "Исследуемая проблема:\n\t";
+            r += "Исследуемая проблема: "+ ((ITarget)Target).Description +"\n\t";
             if (TargetType == Task.TargetType_UserDefinedFunction)
             {
                 r += ((UserDefinedTarget)Target).expression;
@@ -302,6 +304,10 @@ namespace inCapsulam
             else if (TargetType == Task.TargetType_PreDefinedFunction)
             {
                 r += ((PreDefinedTarget)Target).Name;
+            }
+            else if (TargetType == Task.TargetType_JavaScriptCode)
+            {
+                r += ((JsTarget)Target).jsCode.Replace("\n","\n\t");
             }
             r += "\n";
             if (!object.Equals(Constraints, null))

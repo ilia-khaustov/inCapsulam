@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
+using inCapsulam.Optimization.Targets;
 
 namespace inCapsulam.Optimization
 {
@@ -47,7 +48,7 @@ namespace inCapsulam.Optimization
         public double[] Gradient()
         {
             double[] grad = new double[_Parameters.Length];
-            double dX = 0.00001, Y, Y1;
+            double dX = 0.00000000001, Y, Y1;
             for (int i = 0; i < grad.Length; i++)
             {
                 Y = TargetFunction();

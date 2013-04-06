@@ -60,6 +60,7 @@
             this.openFileDialog_XML = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog_XML = new System.Windows.Forms.SaveFileDialog();
             this.userControlDefault = new inCapsulam.UserControlEmpty();
+            this.кодНаJavaScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip_Main.SuspendLayout();
             this.statusStrip_Main.SuspendLayout();
             this.SuspendLayout();
@@ -86,6 +87,7 @@
             this.toolStripSeparator1,
             this.выбратьФункциюToolStripMenuItem,
             this.ввестиФункциюToolStripMenuItem,
+            this.кодНаJavaScriptToolStripMenuItem,
             this.toolStripSeparator2,
             this.ограниченияToolStripMenuItem,
             this.toolStripSeparator3,
@@ -310,6 +312,13 @@
             this.userControlDefault.Size = new System.Drawing.Size(473, 424);
             this.userControlDefault.TabIndex = 1;
             // 
+            // кодНаJavaScriptToolStripMenuItem
+            // 
+            this.кодНаJavaScriptToolStripMenuItem.Name = "кодНаJavaScriptToolStripMenuItem";
+            this.кодНаJavaScriptToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.кодНаJavaScriptToolStripMenuItem.Text = "Код на JavaScript";
+            this.кодНаJavaScriptToolStripMenuItem.Click += new System.EventHandler(this.кодНаJavaScriptToolStripMenuItem_Click);
+            // 
             // form_Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -366,6 +375,7 @@
         private System.Windows.Forms.ToolStripMenuItem помехаToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripMenuItem кодНаJavaScriptToolStripMenuItem;
     }
 }
 

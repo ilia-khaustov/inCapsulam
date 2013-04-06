@@ -6,7 +6,7 @@ using inCapsulam.Optimization;
 using System.Collections;
 using info.lundin.math;
 
-namespace inCapsulam
+namespace inCapsulam.Optimization.Targets
 {
     [Serializable()]
     public class UserDefinedTarget : BlackBox, ITarget
@@ -26,6 +26,14 @@ namespace inCapsulam
             set
             {
                 _Blur = value;
+            }
+        }
+
+        public string Description
+        {
+            get
+            {
+                return "Произвольнвя функция";
             }
         }
 

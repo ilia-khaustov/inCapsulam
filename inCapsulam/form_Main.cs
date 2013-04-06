@@ -338,5 +338,10 @@ namespace inCapsulam
         {
             ChangeUserControl(new UserControlBlur(), "Настройки помехи");
         }
+
+        private void кодНаJavaScriptToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ChangeUserControl(new UserControlJsTarget(), "Код объекта оптимизации на JavaScript");
+        }
     }
 }

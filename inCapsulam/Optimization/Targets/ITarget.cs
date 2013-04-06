@@ -12,5 +12,10 @@ namespace inCapsulam
             get;
             set;
         }
+
+        string Description
+        {
+            get;
+        }
     }
 }

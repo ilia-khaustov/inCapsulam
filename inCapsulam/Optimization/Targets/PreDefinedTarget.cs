@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using inCapsulam.Optimization;
 
-namespace inCapsulam
+namespace inCapsulam.Optimization.Targets
 {
     [Serializable()]
     public class PreDefinedTarget : BlackBox, ITarget
@@ -44,6 +44,7 @@ namespace inCapsulam
                 }
             }
         }
+
         double _Blur;
         public double Blur
         {
@@ -54,6 +55,14 @@ namespace inCapsulam
             set
             {
                 _Blur = value;
+            }
+        }
+
+        public string Description
+        {
+            get
+            {
+                return "Функция из списка заранее заданных";
             }
         }
 

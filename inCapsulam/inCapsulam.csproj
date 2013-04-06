@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Noesis.Javascript" Condition="'$(PlatformTarget)' == 'x86'">
+      <HintPath>..\packages\Noesis.Javascript.0.7.1.0\lib\net40\x86\Noesis.Javascript.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -58,6 +61,7 @@
       <DependentUpon>form_Main.cs</DependentUpon>
     </Compile>
     <Compile Include="Optimization\Targets\ITarget.cs" />
+    <Compile Include="Optimization\Targets\JsTarget.cs" />
     <Compile Include="Optimization\Targets\PreDefinedTarget.cs" />
     <Compile Include="Task.cs" />
     <Compile Include="Extensions\info.lundin.math.cs" />
@@ -75,6 +79,12 @@
     </Compile>
     <Compile Include="UserControlBlur.Designer.cs">
       <DependentUpon>UserControlBlur.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControlJsTarget.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControlJsTarget.Designer.cs">
+      <DependentUpon>UserControlJsTarget.cs</DependentUpon>
     </Compile>
     <Compile Include="UserControlTasksList.cs">
       <SubType>UserControl</SubType>
@@ -130,6 +140,9 @@
     <EmbeddedResource Include="UserControlBlur.resx">
       <DependentUpon>UserControlBlur.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UserControlJsTarget.resx">
+      <DependentUpon>UserControlJsTarget.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UserControlTasksList.resx">
       <DependentUpon>UserControlTasksList.cs</DependentUpon>
     </EmbeddedResource>
@@ -163,6 +176,7 @@
     <EmbeddedResource Include="UserControlUserDefinedTarget.resx">
       <DependentUpon>UserControlUserDefinedTarget.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -174,6 +188,13 @@
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    if not exist "$(TargetDir)x86" md "$(TargetDir)x86"
+    xcopy /s /y "$(SolutionDir)packages\Noesis.Javascript.0.7.1.0\NativeBinaries\net40\x86\*.*" "$(TargetDir)x86"
+    if not exist "$(TargetDir)amd64" md "$(TargetDir)amd64"
+    xcopy /s /y "$(SolutionDir)packages\Noesis.Javascript.0.7.1.0\NativeBinaries\net40\amd64\*.*" "$(TargetDir)amd64"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
