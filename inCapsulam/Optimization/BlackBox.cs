@@ -59,5 +59,14 @@ namespace inCapsulam.Optimization
             }
             return grad;
         }
+
+        public double Calculate(double[] x)
+        {
+            double[] temp = Parameters;
+            Parameters = x;
+            double value = TargetFunction();
+            Parameters = temp;
+            return value;
+        }
     }
 }
