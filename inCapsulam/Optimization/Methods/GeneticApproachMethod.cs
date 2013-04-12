@@ -32,8 +32,8 @@ namespace inCapsulam.Optimization.Methods
             public const short PostSelectionNew = 1;
             public const short PostSelectionHalfOldHalfNew = 2;
 
-            public const short PostOptimizationGaussZeidel = 0;
-            public const short PostOptimizationCorrection = 1;
+            public const short PostOptimizationOneStepCorrection = 0;
+            public const short PostOptimizationGradualCorrection = 1;
 
             public const short PenaltyEmpty = 0;
             public const short PenaltyDynamic = 1;
@@ -124,10 +124,10 @@ namespace inCapsulam.Optimization.Methods
         [Serializable()]
         public class Process
         {
-            public Settings current;
-            public BlackBox target;
-            public BlackBox[] constraints;
-            public bool[] constraintIsEquality;
+            [NonSerialized()]
+            public Task task;
+
+            public Settings current = new Settings();
 
             public int CurrentIteration = 0;
 
@@ -164,66 +164,10 @@ namespace inCapsulam.Optimization.Methods
 
             }
 
-            /// <summary>
-            /// Initializes a new instance of the <see cref="MathHelp.Optimization.GeneticAlgorithm.Process"/> class with standard settings.
-            /// </summary>
-            /// <param name='newTarget'>
-            /// The target of optimization process; criteria to minimize.
-            /// </param>
-            public Process(BlackBox newTarget)
+            public Process(Task theTask, Settings settings)
             {
-                target = newTarget;
-                current = new Settings();
-
-                Population = new Solution[current.PopulationCount];
-                for (int i = 0; i < Population.Length; i++)
-                {
-                    Population[i] = new Solution(this, true);
-                }
-            }
-
-            /// <summary>
-            /// Initializes a new instance of the <see cref="MathHelp.Optimization.GeneticAlgorithm.Process"/> class with custom settings.
-            /// </summary>
-            /// <param name='newTarget'>
-            /// The target of optimization process; criteria to minimize.
-            /// </param>
-            /// <param name='newSettings'>
-            /// Custom settings container.
-            /// </param>
-            public Process(BlackBox newTarget, Settings newSettings)
-            {
-                target = newTarget;
-                current = newSettings;
-
-                Population = new Solution[current.PopulationCount];
-                for (int i = 0; i < Population.Length; i++)
-                {
-                    Population[i] = new Solution(this, true);
-                }
-            }
-
-            /// <summary>
-            /// Initializes a new instance of the <see cref="MathHelp.Optimization.GeneticAlgorithm.Process"/> class with custom settings and constraints.
-            /// </summary>
-            /// <param name='newTarget'>
-            /// The target of optimization process; criteria to minimize.
-            /// </param>
-            /// <param name='newSettings'>
-            /// Custom settings container.
-            /// </param>
-            /// <param name='newConstraints'>
-            /// The constraints in the form of "Constraint(x) >= 0".
-            /// </param>
-            /// <param name='isEquality'>
-            /// Array defines which constraints are equaluties: "Constraint(x) = 0".
-            /// </param>
-            public Process(BlackBox newTarget, Settings newSettings, BlackBox[] newConstraints, bool[] isEquality)
-            {
-                target = newTarget;
-                current = newSettings;
-                constraints = newConstraints;
-                constraintIsEquality = isEquality;
+                task = theTask;
+                current = settings;
                 Population = new Solution[current.PopulationCount];
                 for (int i = 0; i < Population.Length; i++)
                 {
@@ -241,7 +185,7 @@ namespace inCapsulam.Optimization.Methods
                     ProximityMatrix[i] = new double[Population.Length];
                     for (int j = 0; j < Population.Length; j++)
                     {
-                        for (int k = 0; k < target.Parameters.Length; k++)
+                        for (int k = 0; k < task.Target.Parameters.Length; k++)
                         {
                             ProximityMatrix[i][j] += Math.Pow(Population[i][k] - Population[j][k], 2);
                         }
@@ -269,7 +213,6 @@ namespace inCapsulam.Optimization.Methods
 
                 if (CurrentIteration > 0)
                 {
-                    PostOptimization();
                     Log();
                     swatch.Stop();
                     return Logging_BestSolution[CurrentIteration - 1];
@@ -309,7 +252,7 @@ namespace inCapsulam.Optimization.Methods
 
             void CalculateAverageViolations()
             {
-                AverageViolations = new double[constraints.Length];
+                AverageViolations = new double[task.Constraints.Length];
                 for (int i = 0; i < AverageViolations.Length; i++)
                 {
                     for (int j = 0; j < Population.Length; j++)
@@ -391,6 +334,11 @@ namespace inCapsulam.Optimization.Methods
                 else
                 {
                     PostSelection(childs);
+                }
+
+                if (rndm.NextDouble() < current.PostOptimizationCoefficient)
+                {
+                    PostOptimization();
                 }
             }
 
@@ -762,55 +710,34 @@ namespace inCapsulam.Optimization.Methods
             {
                 switch (current.PostOptimizationMode)
                 {
-                    case Settings.PostOptimizationGaussZeidel:
-                        PostOptimizationGaussZeidel();
+                    case Settings.PostOptimizationGradualCorrection:
+                        PostOptimizationGradualCorrection();
                         break;
-                    case Settings.PostOptimizationCorrection:
-                        PostOptimizationCorrection();
+                    case Settings.PostOptimizationOneStepCorrection:
+                        PostOptimizationOneStepCorrection();
                         break;
                 }
+                CalculateFitness(Population);
             }
 
-            private void PostOptimizationGaussZeidel()
+            private void PostOptimizationGradualCorrection()
             {
-                GaussZeidelMethod.Settings settingsPost;
-                settingsPost = new GaussZeidelMethod.Settings();
-                settingsPost.LeftBorder = current.LeftBorderOfFirstPopulationInterval / 10;
-                settingsPost.RightBorder = current.RightBorderOfFirstPopulationInterval / 10;
-                settingsPost.ScalarMethod = "HalfOnHalf";
-                settingsPost.Delta = current.Precision;
-                settingsPost.Epsilon = current.Precision;
-                for (int i = 0; i < Population.Length; i++)
-                {
-                    if (rndm.NextDouble() < current.PostOptimizationCoefficient)
-                    {
-                        settingsPost.FirstX = Population[i].ParametersArray;
-                        GaussZeidelMethod.Process p;
-                        p = new GaussZeidelMethod.Process(target, settingsPost);
-                        Population[i].ParametersArray = p.RunToTheEnd();
-                        Population[i].SetFitness();
-                    }
-                }
+                
             }
 
-            private void PostOptimizationCorrection()
+            private void PostOptimizationOneStepCorrection()
             {
-                List<int> indexesFeasible = new List<int>();
+                List<double[]> solutions = new List<double[]>();
                 for (int i = 0; i < Population.Length; i++)
                 {
-                    if (Population[i].IsFeasible) indexesFeasible.Add(i);
+                    solutions.Add(Population[i].ParametersArray);
                 }
+                Correction.OneStepCorrectionMethod method = new Correction.OneStepCorrectionMethod(task);
+                List<double[]> corrected = method.correctSolutions(solutions);
                 for (int i = 0; i < Population.Length; i++)
                 {
-                    if (indexesFeasible.Contains(i)) continue;
-                    for (int j = 0; j < indexesFeasible.Count; j++)
-                    {
-                        if (rndm.NextDouble() < current.PostOptimizationCoefficient)
-                        {
-                            Population[i] = Solution.Attract(Population[indexesFeasible[j]], Population[i]);
-                            break;
-                        }
-                    }
+                    if (i >= corrected.Count) continue;
+                    Population[Population.Length - i - 1].ParametersArray = corrected[i];
                 }
             }
         }
@@ -856,7 +783,7 @@ namespace inCapsulam.Optimization.Methods
             public Solution(Process parent, bool withRandomValues = false)
             {
                 this.parent = parent;
-                Parameters = new bool[parent.target.Parameters.Length][];
+                Parameters = new bool[parent.task.Target.Parameters.Length][];
                 if (withRandomValues)
                 {
                     for (int i = 0; i < Parameters.Length; i++)
@@ -877,7 +804,7 @@ namespace inCapsulam.Optimization.Methods
             public Solution(Solution s)
             {
                 this.parent = s.parent;
-                Parameters = new bool[parent.target.Parameters.Length][];
+                Parameters = new bool[parent.task.Target.Parameters.Length][];
                 for (int i = 0; i < Parameters.Length; i++)
                 {
                     this[i] = s[i];
@@ -900,11 +827,11 @@ namespace inCapsulam.Optimization.Methods
             static public double[] FitnessCalculate(Solution s)
             {
                 double[] x = s.ParametersArray;
-                s.parent.target.Parameters = x;
+                s.parent.task.Target.Parameters = x;
 
                 s.parent.Logging_ObjectiveFunctionCalculations++;
 
-                double fitness = s.parent.target.TargetFunction();
+                double fitness = s.parent.task.Target.TargetFunction();
 
                 double[] fitnessArray = new double[2] { fitness, fitness };
 
@@ -912,7 +839,7 @@ namespace inCapsulam.Optimization.Methods
 
                 fitnessArray[0] = fitness;
 
-                if (!object.Equals(s.parent.constraints, null))
+                if (!object.Equals(s.parent.task.Constraints, null))
                 {
                     switch (s.parent.current.PenaltyMode)
                     {
@@ -952,11 +879,11 @@ namespace inCapsulam.Optimization.Methods
             double PenaltyStatic(double[] x)
             {
                 int numberOfNotViolated = 0;
-                for (int i = 0; i < parent.constraints.Length; i++)
+                for (int i = 0; i < parent.task.Constraints.Length; i++)
                 {
-                    parent.constraints[i].Parameters = x;
-                    double value = parent.constraints[i].TargetFunction();
-                    if (parent.constraintIsEquality[i])
+                    parent.task.Constraints[i].Parameters = x;
+                    double value = parent.task.Constraints[i].TargetFunction();
+                    if (parent.task.IsEquality[i])
                     {
                         if (Math.Abs(value) <= parent.current.Precision) numberOfNotViolated++;
                     }
@@ -967,7 +894,7 @@ namespace inCapsulam.Optimization.Methods
                 }
                 double bigValue = parent.current.RightBorderOfFirstPopulationInterval * 10;
                 // Static penalty is here:
-                return bigValue - numberOfNotViolated * bigValue / parent.constraints.Length;
+                return bigValue - numberOfNotViolated * bigValue / parent.task.Constraints.Length;
             }
 
             double PenaltyNew(double[] x)
@@ -976,8 +903,8 @@ namespace inCapsulam.Optimization.Methods
                 ParametersArray = x;
                 if (IsFeasible)
                 {
-                    parent.target.Parameters = x;
-                    f = parent.target.TargetFunction();
+                    parent.task.Target.Parameters = x;
+                    f = parent.task.Target.TargetFunction();
                     f += 10000;
                 }
                 else
@@ -996,11 +923,11 @@ namespace inCapsulam.Optimization.Methods
                 alpha = 2;
                 beta = 2;
                 double svc = 0;
-                for (int i = 0; i < parent.constraints.Length; i++)
+                for (int i = 0; i < parent.task.Constraints.Length; i++)
                 {
-                    parent.constraints[i].Parameters = x;
-                    double value = parent.constraints[i].TargetFunction();
-                    if (parent.constraintIsEquality[i])
+                    parent.task.Constraints[i].Parameters = x;
+                    double value = parent.task.Constraints[i].TargetFunction();
+                    if (parent.task.IsEquality[i])
                     {
                         if (Math.Abs(value) > parent.current.Precision)
                         {
@@ -1046,10 +973,10 @@ namespace inCapsulam.Optimization.Methods
                 double penalty = 0;
                 double k = 0;
                 if (IsFeasible) return 0;
-                for (int i = 0; i < parent.constraints.Length; i++)
+                for (int i = 0; i < parent.task.Constraints.Length; i++)
                 {
-                    parent.constraints[i].Parameters = x;
-                    double value = parent.constraints[i].TargetFunction();
+                    parent.task.Constraints[i].Parameters = x;
+                    double value = parent.task.Constraints[i].TargetFunction();
                     k = parent.AverageFitness * parent.AverageViolations[i] / parent.AverageViolationsSquaredSum;
                     penalty += k * Math.Abs(value);
                 }
@@ -1066,13 +993,13 @@ namespace inCapsulam.Optimization.Methods
 
             static public double ViolationCalculate(Solution s)
             {
-                if (object.Equals(s.parent.constraints, null)) return 0;
+                if (object.Equals(s.parent.task.Constraints, null)) return 0;
                 double value = 0;
-                for (int i = 0; i < s.parent.constraints.Length; i++)
+                for (int i = 0; i < s.parent.task.Constraints.Length; i++)
                 {
-                    s.parent.constraints[i].Parameters = s.ParametersArray;
-                    double res = s.parent.constraints[i].TargetFunction();
-                    if (s.parent.constraintIsEquality[i])
+                    s.parent.task.Constraints[i].Parameters = s.ParametersArray;
+                    double res = s.parent.task.Constraints[i].TargetFunction();
+                    if (s.parent.task.IsEquality[i])
                     {
                         res = Math.Abs(res);
                         if (res >= s.parent.current.Precision) value += Math.Pow(res, 2);

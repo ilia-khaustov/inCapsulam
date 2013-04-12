@@ -38,7 +38,7 @@ namespace inCapsulam
 
         public double[] Solve()
         {
-            ga_Process = new GeneticApproachMethod.Process(Target, ga_Settings, Constraints, IsEquality);
+            ga_Process = new GeneticApproachMethod.Process(this, ga_Settings);
             return ga_Process.RunToTheEnd();
         }
 
@@ -56,7 +56,7 @@ namespace inCapsulam
             double successes = 0;
             for (int i = 0; i < TimesToRun; i++)
             {
-                ga_Process = new GeneticApproachMethod.Process(Target, ga_Settings, Constraints, IsEquality);
+                ga_Process = new GeneticApproachMethod.Process(this, ga_Settings);
                 ga_Process.RunToTheEnd();
                 data += GetStatisticsData();
                 averageFeasiblesCount += ga_Process.Logging_FeasiblesCount.Last();
@@ -423,13 +423,13 @@ namespace inCapsulam
             r += "\nБит на параметр: " + ga_Settings.BitCount;
             r += "\nГрей-кодирование: " + (ga_Settings.UseGreyCode ? "Да" : "Нет");
             r += "\nПост-оптимизация: ";
-            if (ga_Settings.PostOptimizationMode == GeneticApproachMethod.Settings.PostOptimizationCorrection)
+            if (ga_Settings.PostOptimizationMode == GeneticApproachMethod.Settings.PostOptimizationGradualCorrection)
             {
-                r += "Лечение";
+                r += "Многошаговый метод";
             }
-            else if (ga_Settings.PostOptimizationMode == GeneticApproachMethod.Settings.PostOptimizationGaussZeidel)
+            else if (ga_Settings.PostOptimizationMode == GeneticApproachMethod.Settings.PostOptimizationOneStepCorrection)
             {
-                r += "Метод Гаусса-Зейделя";
+                r += "Одношаговый метод";
             }
             r += "\nКоэффициент пост-оптимизации: " + ga_Settings.PostOptimizationCoefficient;
             r += "\nКоличество потоков вычислений: " + ga_Settings.ThreadsCount;

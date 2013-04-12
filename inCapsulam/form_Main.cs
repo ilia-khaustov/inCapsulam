@@ -161,7 +161,7 @@ namespace inCapsulam
 
         private void постоптимизацияToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ChangeUserControl(new UserControlPOSettings(), "Настройки пост-оптимизации");
+
         }
 
         private void запусковToolStripMenuItem_Click(object sender, EventArgs e)
@@ -342,6 +342,16 @@ namespace inCapsulam
         private void кодНаJavaScriptToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ChangeUserControl(new UserControlJsTarget(), "Код объекта оптимизации на JavaScript");
+        }
+
+        private void настройкиПОToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ChangeUserControl(new UserControlPOSettings(), "Настройки пост-оптимизации");
+        }
+
+        private void тестированиеПостоптимизацииToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ChangeUserControl(new UserControlPOTesting(), "Тестирование пост-оптимизации");
         }
     }
 }

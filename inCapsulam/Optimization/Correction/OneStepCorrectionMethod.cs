@@ -34,6 +34,8 @@ namespace inCapsulam.Optimization.Correction
                 }
             }
 
+            if (good.Count == 0) return new List<double[]>();
+
             for (int i = 0; i < good.Count; i++)
             {
                 for (int j = 0; j < bad.Count; j++)

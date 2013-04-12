@@ -36,6 +36,7 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.выбратьФункциюToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ввестиФункциюToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.кодНаJavaScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.ограниченияToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
@@ -60,7 +61,8 @@
             this.openFileDialog_XML = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog_XML = new System.Windows.Forms.SaveFileDialog();
             this.userControlDefault = new inCapsulam.UserControlEmpty();
-            this.кодНаJavaScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.настройкиПОToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.тестированиеПостоптимизацииToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip_Main.SuspendLayout();
             this.statusStrip_Main.SuspendLayout();
             this.SuspendLayout();
@@ -137,6 +139,13 @@
             this.ввестиФункциюToolStripMenuItem.Text = "Ввести функцию";
             this.ввестиФункциюToolStripMenuItem.Click += new System.EventHandler(this.ввестиФункциюToolStripMenuItem_Click);
             // 
+            // кодНаJavaScriptToolStripMenuItem
+            // 
+            this.кодНаJavaScriptToolStripMenuItem.Name = "кодНаJavaScriptToolStripMenuItem";
+            this.кодНаJavaScriptToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.кодНаJavaScriptToolStripMenuItem.Text = "Код на JavaScript";
+            this.кодНаJavaScriptToolStripMenuItem.Click += new System.EventHandler(this.кодНаJavaScriptToolStripMenuItem_Click);
+            // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
@@ -179,6 +188,9 @@
             // 
             // постоптимизацияToolStripMenuItem
             // 
+            this.постоптимизацияToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.настройкиПОToolStripMenuItem,
+            this.тестированиеПостоптимизацииToolStripMenuItem});
             this.постоптимизацияToolStripMenuItem.Name = "постоптимизацияToolStripMenuItem";
             this.постоптимизацияToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.постоптимизацияToolStripMenuItem.Text = "Пост-оптимизация";
@@ -312,12 +324,19 @@
             this.userControlDefault.Size = new System.Drawing.Size(473, 424);
             this.userControlDefault.TabIndex = 1;
             // 
-            // кодНаJavaScriptToolStripMenuItem
+            // настройкиПОToolStripMenuItem
             // 
-            this.кодНаJavaScriptToolStripMenuItem.Name = "кодНаJavaScriptToolStripMenuItem";
-            this.кодНаJavaScriptToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
-            this.кодНаJavaScriptToolStripMenuItem.Text = "Код на JavaScript";
-            this.кодНаJavaScriptToolStripMenuItem.Click += new System.EventHandler(this.кодНаJavaScriptToolStripMenuItem_Click);
+            this.настройкиПОToolStripMenuItem.Name = "настройкиПОToolStripMenuItem";
+            this.настройкиПОToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
+            this.настройкиПОToolStripMenuItem.Text = "Настройки пост-оптимизации";
+            this.настройкиПОToolStripMenuItem.Click += new System.EventHandler(this.настройкиПОToolStripMenuItem_Click);
+            // 
+            // тестированиеПостоптимизацииToolStripMenuItem
+            // 
+            this.тестированиеПостоптимизацииToolStripMenuItem.Name = "тестированиеПостоптимизацииToolStripMenuItem";
+            this.тестированиеПостоптимизацииToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
+            this.тестированиеПостоптимизацииToolStripMenuItem.Text = "Тестирование пост-оптимизации";
+            this.тестированиеПостоптимизацииToolStripMenuItem.Click += new System.EventHandler(this.тестированиеПостоптимизацииToolStripMenuItem_Click);
             // 
             // form_Main
             // 
@@ -376,6 +395,8 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem кодНаJavaScriptToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem настройкиПОToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem тестированиеПостоптимизацииToolStripMenuItem;
     }
 }
 

@@ -104,6 +104,11 @@ namespace inCapsulam
             childSelectionType.Enabled = useChildSelection.Checked;
         }
 
+        private void penaltyType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
 
     }
 }

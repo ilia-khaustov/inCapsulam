@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label17 = new System.Windows.Forms.Label();
+            this.threadsCount = new System.Windows.Forms.NumericUpDown();
             this.useChildSelection = new System.Windows.Forms.CheckBox();
             this.childSelectionType = new System.Windows.Forms.ComboBox();
             this.label16 = new System.Windows.Forms.Label();
@@ -66,9 +68,8 @@
             this.leftBorderInterval = new System.Windows.Forms.NumericUpDown();
             this.iterationsMax = new System.Windows.Forms.NumericUpDown();
             this.rightBorderInterval = new System.Windows.Forms.NumericUpDown();
-            this.threadsCount = new System.Windows.Forms.NumericUpDown();
-            this.label17 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.threadsCount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.objectiveFunctionMin)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bitsCount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.precision)).BeginInit();
@@ -79,7 +80,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.leftBorderInterval)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.iterationsMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rightBorderInterval)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.threadsCount)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -127,6 +127,33 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(437, 502);
             this.panel1.TabIndex = 30;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(34, 448);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(123, 15);
+            this.label17.TabIndex = 39;
+            this.label17.Text = "Количество потоков:";
+            // 
+            // threadsCount
+            // 
+            this.threadsCount.Location = new System.Drawing.Point(162, 446);
+            this.threadsCount.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.threadsCount.Name = "threadsCount";
+            this.threadsCount.Size = new System.Drawing.Size(98, 23);
+            this.threadsCount.TabIndex = 38;
+            this.threadsCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.threadsCount.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // useChildSelection
             // 
@@ -381,6 +408,7 @@
             this.penaltyType.Name = "penaltyType";
             this.penaltyType.Size = new System.Drawing.Size(264, 23);
             this.penaltyType.TabIndex = 6;
+            this.penaltyType.SelectedIndexChanged += new System.EventHandler(this.penaltyType_SelectedIndexChanged);
             // 
             // label11
             // 
@@ -607,33 +635,6 @@
             0});
             this.rightBorderInterval.ValueChanged += new System.EventHandler(this.rightBorderInterval_ValueChanged);
             // 
-            // threadsCount
-            // 
-            this.threadsCount.Location = new System.Drawing.Point(162, 446);
-            this.threadsCount.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.threadsCount.Name = "threadsCount";
-            this.threadsCount.Size = new System.Drawing.Size(98, 23);
-            this.threadsCount.TabIndex = 38;
-            this.threadsCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.threadsCount.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(34, 448);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(123, 15);
-            this.label17.TabIndex = 39;
-            this.label17.Text = "Количество потоков:";
-            // 
             // UserControlGASettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -645,6 +646,7 @@
             this.Size = new System.Drawing.Size(444, 507);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.threadsCount)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.objectiveFunctionMin)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.bitsCount)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.precision)).EndInit();
@@ -655,7 +657,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.leftBorderInterval)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.iterationsMax)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.rightBorderInterval)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.threadsCount)).EndInit();
             this.ResumeLayout(false);
 
         }

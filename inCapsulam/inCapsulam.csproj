@@ -53,6 +53,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Optimization\Correction\OneStepCorrectionMethod.cs" />
     <Compile Include="Optimization\Targets\AssignmentTaskTarget.cs" />
     <Compile Include="form_Main.cs">
       <SubType>Form</SubType>
@@ -85,6 +86,12 @@
     </Compile>
     <Compile Include="UserControlJsTarget.Designer.cs">
       <DependentUpon>UserControlJsTarget.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControlPOTesting.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControlPOTesting.Designer.cs">
+      <DependentUpon>UserControlPOTesting.cs</DependentUpon>
     </Compile>
     <Compile Include="UserControlTasksList.cs">
       <SubType>UserControl</SubType>
@@ -143,6 +150,9 @@
     <EmbeddedResource Include="UserControlJsTarget.resx">
       <DependentUpon>UserControlJsTarget.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UserControlPOTesting.resx">
+      <DependentUpon>UserControlPOTesting.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UserControlTasksList.resx">
       <DependentUpon>UserControlTasksList.cs</DependentUpon>
     </EmbeddedResource>
@@ -187,6 +197,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

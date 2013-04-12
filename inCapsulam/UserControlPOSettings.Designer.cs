@@ -28,43 +28,23 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new System.Windows.Forms.Label();
-            this.mode = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.coefficient = new System.Windows.Forms.NumericUpDown();
             this.saveButton = new System.Windows.Forms.Button();
+            this.coefficient = new System.Windows.Forms.NumericUpDown();
+            this.label2 = new System.Windows.Forms.Label();
+            this.mode = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.coefficient)).BeginInit();
             this.SuspendLayout();
             // 
-            // label1
+            // saveButton
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(26, 6);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(65, 15);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Алгоритм:";
-            // 
-            // mode
-            // 
-            this.mode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.mode.FormattingEnabled = true;
-            this.mode.Items.AddRange(new object[] {
-            "Метод Гаусса-Зейделя",
-            "Лечение"});
-            this.mode.Location = new System.Drawing.Point(97, 3);
-            this.mode.Name = "mode";
-            this.mode.Size = new System.Drawing.Size(245, 23);
-            this.mode.TabIndex = 1;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(4, 34);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(87, 15);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Коэффициент:";
+            this.saveButton.Location = new System.Drawing.Point(97, 61);
+            this.saveButton.Name = "saveButton";
+            this.saveButton.Size = new System.Drawing.Size(82, 23);
+            this.saveButton.TabIndex = 4;
+            this.saveButton.Text = "Сохранить";
+            this.saveButton.UseVisualStyleBackColor = true;
+            this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
             // 
             // coefficient
             // 
@@ -85,15 +65,35 @@
             this.coefficient.TabIndex = 3;
             this.coefficient.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // saveButton
+            // label2
             // 
-            this.saveButton.Location = new System.Drawing.Point(97, 61);
-            this.saveButton.Name = "saveButton";
-            this.saveButton.Size = new System.Drawing.Size(82, 23);
-            this.saveButton.TabIndex = 4;
-            this.saveButton.Text = "Сохранить";
-            this.saveButton.UseVisualStyleBackColor = true;
-            this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(4, 34);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(87, 15);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "Коэффициент:";
+            // 
+            // mode
+            // 
+            this.mode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.mode.FormattingEnabled = true;
+            this.mode.Items.AddRange(new object[] {
+            "Одношаговый метод",
+            "Многошаговый метод"});
+            this.mode.Location = new System.Drawing.Point(97, 3);
+            this.mode.Name = "mode";
+            this.mode.Size = new System.Drawing.Size(245, 23);
+            this.mode.TabIndex = 1;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(26, 6);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(65, 15);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Алгоритм:";
             // 
             // UserControlPOSettings
             // 
