@@ -9,7 +9,7 @@ namespace inCapsulam.Optimization.Correction
     public class OneStepCorrectionMethod
     {
         public Task task;
-
+        public int calculations = 0;
         public OneStepCorrectionMethod(Task task)
         {
             this.task = task;
@@ -40,7 +40,8 @@ namespace inCapsulam.Optimization.Correction
             {
                 for (int j = 0; j < bad.Count; j++)
                 {
-                    corrected.Add(GoldenSection(good[i], bad[j]));
+                    if (Program.rndm.NextDouble() < task.ga_Settings.Precision)
+                        corrected.Add(GoldenSection(good[i], bad[j]));
                 }
             }
 
@@ -53,14 +54,16 @@ namespace inCapsulam.Optimization.Correction
         int compareSolutions(double[] s1, double[] s2)
         {
             double y1 = task.Target.Calculate(s1);
+            calculations++;
             double y2 = task.Target.Calculate(s2);
+            calculations++;
 
             if (y1 == y2) return 0;
             else if (y1 > y2) return 1;
             else return -1;
         }
 
-        double violationOf(double[] solution)
+        public double violationOf(double[] solution)
         {
             if (object.Equals(task.Constraints, null)) return 0;
             double value = 0;
@@ -68,6 +71,7 @@ namespace inCapsulam.Optimization.Correction
             {
                 task.Constraints[i].Parameters = solution;
                 double res = task.Constraints[i].TargetFunction();
+                calculations++;
                 if (task.IsEquality[i])
                 {
                     res = Math.Abs(res);
@@ -90,14 +94,31 @@ namespace inCapsulam.Optimization.Correction
             AB = B - A;
             Xmin = (A + B) / 2;
             Xgood = A;
-            while (AB.EuklidNorm > task.ga_Settings.Precision)
+            while (AB.EuklidNorm > 1)
             {
                 X1 = A + (B - A) / gs;
                 X2 = B - (B - A) / gs;
                 double y1 = task.Target.Calculate(X1.Values);
                 double y2 = task.Target.Calculate(X2.Values);
-                if (y1 >= y2) B = X1;
+                double v1 = violationOf(X1.Values);
+                double v2 = violationOf(X2.Values);
+                calculations += 2;
+                if (v1 >= v2)
+                {
+                    if (v1 <= task.ga_Settings.Precision)
+                    {
+                        if (y1 >= y2) B = X1;
+                        else A = X2;
+                    }
+                    else B = X1;
+                }
+                else if (v2 <= task.ga_Settings.Precision)
+                {
+                    if (y1 >= y2) B = X1;
+                    else A = X2;
+                }
                 else A = X2;
+
                 Xmin = (A + B) / 2;
                 if (violationOf(Xmin.Values) < task.ga_Settings.Precision) 
                     Xgood = new Vector(Xmin.Values);

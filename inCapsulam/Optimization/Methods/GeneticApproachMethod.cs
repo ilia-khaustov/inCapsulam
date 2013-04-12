@@ -336,10 +336,7 @@ namespace inCapsulam.Optimization.Methods
                     PostSelection(childs);
                 }
 
-                if (rndm.NextDouble() < current.PostOptimizationCoefficient)
-                {
-                    PostOptimization();
-                }
+                PostOptimization();
             }
 
             void Log()
@@ -734,9 +731,11 @@ namespace inCapsulam.Optimization.Methods
                 }
                 Correction.OneStepCorrectionMethod method = new Correction.OneStepCorrectionMethod(task);
                 List<double[]> corrected = method.correctSolutions(solutions);
+                Logging_ObjectiveFunctionCalculations += method.calculations;
+
                 for (int i = 0; i < Population.Length; i++)
                 {
-                    if (i >= corrected.Count) continue;
+                    if (i >= corrected.Count) break;
                     Population[Population.Length - i - 1].ParametersArray = corrected[i];
                 }
             }

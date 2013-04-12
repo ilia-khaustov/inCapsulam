@@ -36,10 +36,23 @@ namespace inCapsulam
         
         public short TargetType;
 
+        public double[] PointOfMinimum;
+
         public double[] Solve()
         {
             ga_Process = new GeneticApproachMethod.Process(this, ga_Settings);
             return ga_Process.RunToTheEnd();
+        }
+
+        public double EstimatePoint(double[] point)
+        {
+            double e = 0;
+            for (int i = 0; i < point.Length; i++)
+            {
+                e += Math.Pow(point[i] - PointOfMinimum[i], 2);
+            }
+            e = Math.Sqrt(e) / point.Length;
+            return e;
         }
 
         public string[] CollectStatistics()

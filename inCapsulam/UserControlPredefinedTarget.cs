@@ -26,6 +26,7 @@ namespace inCapsulam
         private void UserControlPredefinedTarget_Resize(object sender, EventArgs e)
         {
             functionsComboBox.Width = this.Width - 1;
+            textBoxX.Width = this.Width - 1;
         }
 
         private void functionsComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -53,6 +54,42 @@ namespace inCapsulam
                         i--;
                     }
                 }
+            }
+        }
+
+        private void UserControlPredefinedTarget_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void variablesCountSpin_ValueChanged(object sender, EventArgs e)
+        {
+            string value = "";
+            for (int i = 0; i < variablesCountSpin.Value; i++)
+            {
+                value += "0";
+                if (i < variablesCountSpin.Value - 1) value += " ";
+            }
+            textBoxX.Text = value;
+        }
+
+        private void textBoxX_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                string x_text = textBoxX.Text;
+                string[] x_textArray = x_text.Split(new char[1] { ' ' });
+                double[] newPointOfMinimum = new double[x_textArray.Length];
+                for (int i = 0; i < newPointOfMinimum.Length; i++)
+                {
+                    newPointOfMinimum[i] = Double.Parse(x_textArray[i]);
+                }
+                Program.TaskCurrent.PointOfMinimum = newPointOfMinimum;
+                saveButton.Enabled = true;
+            }
+            catch (Exception ex)
+            {
+                saveButton.Enabled = false;
             }
         }
     }

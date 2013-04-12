@@ -50,7 +50,12 @@ namespace inCapsulam
                 string samplesString = textBoxSamples.Text;
                 string[] samplesStrings = samplesString.Split(new string[1] { "\r\n" }, StringSplitOptions.None);
                 List<double[]> samples = new List<double[]>();
-                double averageSamples = 0;
+                Optimization.Correction.OneStepCorrectionMethod method =
+                    new Optimization.Correction.OneStepCorrectionMethod(Program.TaskCurrent);
+
+                double qualitySamples = 0;
+                int violations = 0;
+
                 for (int i = 0; i < samplesStrings.Length; i++)
                 {
                     string[] newSampleString = samplesStrings[i].Split(new string[1] { " " }, StringSplitOptions.None);
@@ -59,20 +64,19 @@ namespace inCapsulam
                     {
                         newSample[j] = double.Parse(newSampleString[j]);
                     }
-                    averageSamples += Program.TaskCurrent.Target.Calculate(newSample);
+                    qualitySamples += Program.TaskCurrent.Target.Calculate(newSample);
+                    violations += method.violationOf(newSample) > Program.TaskCurrent.ga_Settings.Precision ? 1 : 0;
                     samples.Add(newSample);
                 }
 
-                averageSamples /= samplesString.Length;
-
-                textBoxInfo.Text += "Среднее значение ЦФ выборки:\r\n\t" + averageSamples + "\r\n";
-
-                Optimization.Correction.OneStepCorrectionMethod method =
-                    new Optimization.Correction.OneStepCorrectionMethod(Program.TaskCurrent);
+                qualitySamples /= samplesString.Length;
+                qualitySamples = Math.Pow(qualitySamples, (violations/Program.TaskCurrent.Constraints.Length)+1);
+                qualitySamples = 1 / (qualitySamples + 1);
+                textBoxInfo.Text += "Качество выборки:\r\n\t" + qualitySamples + "\r\n";
                 List<double[]> corrected = method.correctSolutions(samples);
 
                 textBoxResult.Text = "";
-                double average = 0;
+                double qualityResult = 0;
 
                 for (int i = 0; i < corrected.Count; i++)
                 {
@@ -80,11 +84,13 @@ namespace inCapsulam
                     {
                         textBoxResult.Text += corrected[i][j] + " ";
                     }
-                    average += Program.TaskCurrent.Target.Calculate(corrected[i]);
+                    qualityResult += Program.TaskCurrent.Target.Calculate(corrected[i]);
                     textBoxResult.Text += "\r\n";
                 }
-                average /= corrected.Count;
-                textBoxInfo.Text += "Среднее значение ЦФ исправленной выборки:\r\n\t" + average + "\r\n";
+                qualityResult /= corrected.Count;
+                qualityResult = 1 / (qualityResult + 1);
+                textBoxInfo.Text += "Качество исправленной выборки:\r\n\t" + qualityResult + "\r\n";
+                textBoxInfo.Text += "Количество вычислений:\r\n\t" + method.calculations + "\r\n";
             }
             catch (Exception ex)
             {

@@ -33,12 +33,14 @@
             this.label2 = new System.Windows.Forms.Label();
             this.functionsComboBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.textBoxX = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.variablesCountSpin)).BeginInit();
             this.SuspendLayout();
             // 
             // saveButton
             // 
-            this.saveButton.Location = new System.Drawing.Point(0, 91);
+            this.saveButton.Location = new System.Drawing.Point(0, 136);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(75, 23);
             this.saveButton.TabIndex = 4;
@@ -57,6 +59,7 @@
             this.variablesCountSpin.Name = "variablesCountSpin";
             this.variablesCountSpin.Size = new System.Drawing.Size(75, 23);
             this.variablesCountSpin.TabIndex = 3;
+            this.variablesCountSpin.ValueChanged += new System.EventHandler(this.variablesCountSpin_ValueChanged);
             // 
             // label2
             // 
@@ -94,11 +97,30 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Функция:";
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(-3, 88);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(106, 15);
+            this.label3.TabIndex = 5;
+            this.label3.Text = "Точка минимума:";
+            // 
+            // textBoxX
+            // 
+            this.textBoxX.Location = new System.Drawing.Point(0, 107);
+            this.textBoxX.Name = "textBoxX";
+            this.textBoxX.Size = new System.Drawing.Size(283, 23);
+            this.textBoxX.TabIndex = 6;
+            this.textBoxX.TextChanged += new System.EventHandler(this.textBoxX_TextChanged);
+            // 
             // UserControlPredefinedTarget
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
+            this.Controls.Add(this.textBoxX);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.variablesCountSpin);
             this.Controls.Add(this.label2);
@@ -107,6 +129,7 @@
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Name = "UserControlPredefinedTarget";
             this.Size = new System.Drawing.Size(283, 252);
+            this.Load += new System.EventHandler(this.UserControlPredefinedTarget_Load);
             this.Resize += new System.EventHandler(this.UserControlPredefinedTarget_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.variablesCountSpin)).EndInit();
             this.ResumeLayout(false);
@@ -121,5 +144,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown variablesCountSpin;
         private System.Windows.Forms.Button saveButton;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox textBoxX;
     }
 }
