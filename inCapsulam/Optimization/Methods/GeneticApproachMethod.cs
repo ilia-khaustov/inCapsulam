@@ -715,12 +715,25 @@ namespace inCapsulam.Optimization.Methods
                         PostOptimizationOneStepCorrection();
                         break;
                 }
-                CalculateFitness(Population);
             }
 
             private void PostOptimizationGradualCorrection()
             {
-                
+                List<double[]> solutions = new List<double[]>();
+                for (int i = 0; i < Population.Length; i++)
+                {
+                    solutions.Add(Population[i].ParametersDouble);
+                }
+                Correction.GradualCorrectionMethod method = new Correction.GradualCorrectionMethod(task);
+                List<double[]> corrected = method.correctSolutions(solutions);
+                Logging_ObjectiveFunctionCalculations += method.calculations;
+
+                for (int i = 0; i < Population.Length; i++)
+                {
+                    if (i >= corrected.Count) break;
+                    Population[Population.Length - i - 1].ParametersDouble = corrected[i];
+                    Population[Population.Length - i - 1].SetFitness();
+                }
             }
 
             private void PostOptimizationOneStepCorrection()
@@ -738,6 +751,7 @@ namespace inCapsulam.Optimization.Methods
                 {
                     if (i >= corrected.Count) break;
                     Population[Population.Length - i - 1].ParametersDouble = corrected[i];
+                    Population[Population.Length - i - 1].SetFitness();
                 }
             }
         }

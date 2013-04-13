@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Optimization\Correction\CorrectionMethod.cs" />
+    <Compile Include="Optimization\Correction\GradualCorrectionMethod.cs" />
     <Compile Include="Optimization\Correction\OneStepCorrectionMethod.cs" />
     <Compile Include="Optimization\Solution.cs" />
     <Compile Include="Optimization\Targets\AssignmentTaskTarget.cs" />

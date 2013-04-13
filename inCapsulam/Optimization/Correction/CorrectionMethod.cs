@@ -16,9 +16,7 @@ namespace inCapsulam.Optimization.Correction
         public int compareSolutions(double[] s1, double[] s2)
         {
             double y1 = task.Target.Calculate(s1);
-            calculations++;
             double y2 = task.Target.Calculate(s2);
-            calculations++;
 
             if (y1 == y2) return 0;
             else if (y1 > y2) return 1;
@@ -59,8 +57,8 @@ namespace inCapsulam.Optimization.Correction
             Xgood = A;
             while (AB.EuklidNorm > E)
             {
-                X1 = A + (B - A) / gs;
-                X2 = B - (B - A) / gs;
+                X1 = B - (B - A) / gs;
+                X2 = A + (B - A) / gs;
                 double y1 = task.Target.Calculate(X1.Values);
                 double y2 = task.Target.Calculate(X2.Values);
                 double v1 = violationOf(X1.Values);
@@ -70,23 +68,23 @@ namespace inCapsulam.Optimization.Correction
                 {
                     if (v1 <= task.ga_Settings.Precision)
                     {
-                        if (y1 >= y2) B = X1;
-                        else A = X2;
+                        if (y1 >= y2) A = X1;
+                        else B = X2;
                     }
-                    else B = X1;
+                    else A = X1;
                 }
                 else if (v2 <= task.ga_Settings.Precision)
                 {
-                    if (y1 >= y2) B = X1;
-                    else A = X2;
+                    if (y1 >= y2) A = X1;
+                    else B = X2;
                 }
-                else A = X2;
-
-                Xmin = (A + B) / 2;
-                if (violationOf(Xmin.Values) < task.ga_Settings.Precision) 
-                    Xgood = new Vector(Xmin.Values);
+                else B = X2;
                 AB = B - A;
             }
+            Xmin = (A + B) / 2;
+            if (violationOf(Xmin.Values) < task.ga_Settings.Precision)
+                Xgood = new Vector(Xmin.Values);
+            calculations++;
             return Xgood.Values;
         }
     }
