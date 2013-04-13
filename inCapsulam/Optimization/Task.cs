@@ -13,7 +13,7 @@ using inCapsulam.Optimization;
 using inCapsulam.Optimization.Methods;
 using inCapsulam.Optimization.Targets;
 
-namespace inCapsulam
+namespace inCapsulam.Optimization
 {
     [Serializable()]
     public class Task
@@ -47,6 +47,7 @@ namespace inCapsulam
         public double EstimatePoint(double[] point)
         {
             double e = 0;
+            if (PointOfMinimum == null) return Double.PositiveInfinity;
             for (int i = 0; i < point.Length; i++)
             {
                 e += Math.Pow(point[i] - PointOfMinimum[i], 2);
@@ -66,6 +67,7 @@ namespace inCapsulam
             double averageParentsCount = 0;
             double averageFeasiblesCount = 0;
             double averageTimeElapsed = 0;
+            double averageConstrainedOptimizationQuality = 0;
             double successes = 0;
             for (int i = 0; i < TimesToRun; i++)
             {
@@ -78,6 +80,7 @@ namespace inCapsulam
                 averageIterations += ga_Process.Logging_BestFitness.Count;
                 averageParentsCount += ga_Process.Logging_ParentsCount.Last();
                 averageTimeElapsed += ga_Process.Logging_TimeElapsed;
+                averageConstrainedOptimizationQuality += EstimatePoint(ga_Process.Logging_BestSolution.Last());
                 if (Math.Abs(ga_Process.Logging_BestValue.Last()) < ga_Settings.Precision * 5) successes++;
             }
             averageParentsCount /= TimesToRun;
@@ -86,6 +89,7 @@ namespace inCapsulam
             averageValueAverage /= TimesToRun;
             averageFeasiblesCount /= TimesToRun;
             averageTimeElapsed /= TimesToRun;
+            averageConstrainedOptimizationQuality /= TimesToRun;
             successes /= TimesToRun;
             successes *= 100;
             averageParentsCount = Math.Round(averageParentsCount, 5);
@@ -94,15 +98,17 @@ namespace inCapsulam
             averageValueAverage = Math.Round(averageValueAverage, 5);
             averageFeasiblesCount = Math.Round(averageFeasiblesCount, 5);
             averageTimeElapsed = Math.Round(averageTimeElapsed, 5);
+            averageConstrainedOptimizationQuality = Math.Round(averageConstrainedOptimizationQuality, 5);
             stats += GetSettingsInfo();
             stats += "\n\nРезультат усреднения по "+TimesToRun+" запускам:";
             stats += "\n\nНадёжность при экстремуме в нуле (интервал: " +ga_Settings.Precision*5+"):\n\t" + successes + "%";
+            stats += "\nУсредненное расстояние до точки минимума:\n\t" + averageConstrainedOptimizationQuality;
             stats += "\nУсредненное значение ЦФ лучшего решения:\n\t" + averageValueBest;
             stats += "\nУсредненное среднее значение ЦФ:\n\t" + averageValueAverage;
-            stats += "\nУсреднённое количество поколений:\n\t" + averageIterations;
-            stats += "\nУсреднённое количество родителей в последнем поколении:\n\t" + averageParentsCount;
-            stats += "\nУсреднённое количество пригодных решений в последнем поколении:\n\t" + averageFeasiblesCount;
-            stats += "\nУсреднённое время поиска:\n\t" + averageTimeElapsed;
+            stats += "\nУсредненное количество поколений:\n\t" + averageIterations;
+            stats += "\nУсредненное количество родителей в последнем поколении:\n\t" + averageParentsCount;
+            stats += "\nУсредненное количество пригодных решений в последнем поколении:\n\t" + averageFeasiblesCount;
+            stats += "\nУсредненное время поиска:\n\t" + averageTimeElapsed;
             return new string[2] { stats, data };
         }
 
@@ -128,6 +134,7 @@ namespace inCapsulam
             data += "Используется элитизм" + "\t";
             data += "Используется грей-кодирование" + "\t";
             data += "Полученное значение ЦФ" + "\t";
+            data += "Расстояние до точки минимума" + "\t";
             data += "Количество потоков вычислений" + "\t";
             data += "Затраченное время (мс)";
             data += "\n";
@@ -157,6 +164,7 @@ namespace inCapsulam
             data += (ga_Process.current.UseElitism ? "1" : "0") + "\t";
             data += (ga_Process.current.UseGreyCode ? "1" : "0") + "\t";
             data += ga_Process.Logging_BestValue.Last() + "\t";
+            data += EstimatePoint(ga_Process.Logging_BestSolution.Last()) + "\t";
             data += ga_Process.current.ThreadsCount + "\t";
             data += ga_Process.Logging_TimeElapsed;
             data += "\n";
@@ -285,7 +293,8 @@ namespace inCapsulam
                 r += p.Logging_BestSolution.Last()[i];
                 if (i < Target.Parameters.Length - 1) r += "\n\t";
             }
-
+            r += "\nРасстояние до точки минимума:\n\t";
+            r += EstimatePoint(p.Logging_BestSolution.Last());
             r += "\n\n";
             r += "Среднее значение (последняя итерация):\n\t" +
                 Various.DoubleToString(
@@ -309,19 +318,7 @@ namespace inCapsulam
             string r = "";
 
             r += "Количество переменных:\n\t" + Target.Parameters.Length + "\n";
-            r += "Исследуемая проблема: "+ ((ITarget)Target).Description +"\n\t";
-            if (TargetType == Task.TargetType_UserDefinedFunction)
-            {
-                r += ((UserDefinedTarget)Target).expression;
-            }
-            else if (TargetType == Task.TargetType_PreDefinedFunction)
-            {
-                r += ((PreDefinedTarget)Target).Name;
-            }
-            else if (TargetType == Task.TargetType_JavaScriptCode)
-            {
-                r += ((JsTarget)Target).jsCode.Replace("\n","\n\t");
-            }
+            r += "Исследуемая проблема:\n\t" + ((ITarget)Target).Description;
             r += "\n";
             if (!object.Equals(Constraints, null))
             {

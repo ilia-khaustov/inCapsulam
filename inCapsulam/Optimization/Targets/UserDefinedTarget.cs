@@ -4,17 +4,13 @@ using System.Linq;
 using System.Text;
 using inCapsulam.Optimization;
 using System.Collections;
-using info.lundin.math;
+using YAMP;
 
 namespace inCapsulam.Optimization.Targets
 {
     [Serializable()]
     public class UserDefinedTarget : BlackBox, ITarget
     {
-        [NonSerialized()]
-        Hashtable htable;
-        [NonSerialized()]
-        ExpressionParser parser = new ExpressionParser();
         public String expression;
         double _Blur;
         public double Blur
@@ -33,7 +29,7 @@ namespace inCapsulam.Optimization.Targets
         {
             get
             {
-                return "Произвольнвя функция";
+                return expression;
             }
         }
 
@@ -52,23 +48,23 @@ namespace inCapsulam.Optimization.Targets
         public override double TargetFunction()
         {
             double result = double.NaN;
-            try
-            {
-                if (object.Equals(htable, null)) htable = new Hashtable();
-                else htable.Clear();
-                double error = Various.GenerateNormallyDistributedValue(0, 3 * Blur);
-                if (object.Equals(parser, null)) parser = new ExpressionParser();
-                for (int i = 0; i < Parameters.Length; i++)
-                {
-                    htable.Add("x" + (i + 1), Parameters[i].ToString());
-                }
-                result = parser.Parse(expression, htable) + error;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            double error = Various.GenerateNormallyDistributedValue(0, 3 * Blur);
+
+            fillConstants();
+
+            var parser = Parser.Parse(expression);
+            result = ((ScalarValue)parser.Execute()).Value + error;
+
             return result;
+        }
+
+        void fillConstants()
+        {
+            for (int i = 0; i < Parameters.Length; i++)
+            {
+                string key = "x" + (i + 1);
+                Parser.AddCustomConstant(key, Parameters[i]);
+            }
         }
     }
 }

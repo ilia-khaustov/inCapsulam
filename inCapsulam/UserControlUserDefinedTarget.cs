@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using inCapsulam.Optimization.Targets;
+using inCapsulam.Optimization;
 
 namespace inCapsulam
 {
@@ -29,17 +30,7 @@ namespace inCapsulam
 
         private void expressionTextBox_TextChanged(object sender, EventArgs e)
         {
-            saveButton.Enabled = false;
-            try
-            {
-                tempTarget.expression = expressionTextBox.Text;
-                tempTarget.TargetFunction();
-                saveButton.Enabled = true;
-            }
-            catch
-            {
-
-            }
+            
         }
 
         private void UserControlUserDefinedTarget_Resize(object sender, EventArgs e)
@@ -56,6 +47,7 @@ namespace inCapsulam
             saveButton.Enabled = false;
             try
             {
+                tempTarget.expression = expressionTextBox.Text;
                 tempTarget.Parameters = new double[(int)variablesCountSpin.Value];
                 tempTarget.TargetFunction();
                 saveButton.Enabled = true;

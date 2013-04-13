@@ -62,7 +62,7 @@ namespace inCapsulam.Optimization.Targets
         {
             get
             {
-                return "Функция из списка заранее заданных";
+                return Name;
             }
         }
 

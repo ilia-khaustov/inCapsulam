@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using inCapsulam.Optimization;
 
 namespace inCapsulam
 {
@@ -151,7 +152,14 @@ namespace inCapsulam
         {
             if (object.Equals(Program.TaskCurrent.Target, null)) return;
             решитьToolStripMenuItem.Enabled = false;
-            singleJobBackgroundWorker.RunWorkerAsync();
+            try
+            {
+                singleJobBackgroundWorker.RunWorkerAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Произошла ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void базовыеНастройкиToolStripMenuItem_Click(object sender, EventArgs e)

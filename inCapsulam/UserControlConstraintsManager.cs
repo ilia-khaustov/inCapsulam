@@ -74,6 +74,7 @@ namespace inCapsulam
                 tempIndex = -1;
                 constraintsListBox.ClearSelected();
                 buttonRemove.Enabled = false;
+                buttonSave.Enabled = false;
             }
         }
 
@@ -117,6 +118,27 @@ namespace inCapsulam
         }
 
         private void expressionTextBox_TextChanged(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void constraintsListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (constraintsListBox.SelectedIndex >= 0)
+            {
+                tempIndex = constraintsListBox.SelectedIndex;
+                tempIsEquality = Program.TaskCurrent.IsEquality[tempIndex];
+                tempExpression = (string)constraintsListBox.SelectedItem;
+                expressionTextBox.Text = tempExpression;
+                buttonRemove.Enabled = true;
+            }
+            else
+            {
+                buttonRemove.Enabled = false;
+            }
+        }
+
+        private void buttonTest_Click(object sender, EventArgs e)
         {
             string buffer = expressionTextBox.Text;
             if (!expressionTextBox.Enabled) return;
@@ -232,22 +254,6 @@ namespace inCapsulam
                     buttonSave.Enabled = false;
                     return;
                 }
-            }
-        }
-
-        private void constraintsListBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (constraintsListBox.SelectedIndex >= 0)
-            {
-                tempIndex = constraintsListBox.SelectedIndex;
-                tempIsEquality = Program.TaskCurrent.IsEquality[tempIndex];
-                tempExpression = (string)constraintsListBox.SelectedItem;
-                expressionTextBox.Text = tempExpression;
-                buttonRemove.Enabled = true;
-            }
-            else
-            {
-                buttonRemove.Enabled = false;
             }
         }
     }

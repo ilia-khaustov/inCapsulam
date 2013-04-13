@@ -132,7 +132,7 @@ namespace inCapsulam.Optimization.Methods
             public int CurrentIteration = 0;
 
             [NonSerialized()]
-            public Solution[] Population;
+            public SolutionGA[] Population;
 
             int threadsRunning;
 
@@ -168,10 +168,10 @@ namespace inCapsulam.Optimization.Methods
             {
                 task = theTask;
                 current = settings;
-                Population = new Solution[current.PopulationCount];
+                Population = new SolutionGA[current.PopulationCount];
                 for (int i = 0; i < Population.Length; i++)
                 {
-                    Population[i] = new Solution(this, true);
+                    Population[i] = new SolutionGA(this, true);
                 }
             }
 
@@ -267,26 +267,27 @@ namespace inCapsulam.Optimization.Methods
 
             void CalculateFitnessOf(object info)
             {
-                Solution[] solutions = (Solution[])info;
+                SolutionGA[] solutions = (SolutionGA[])info;
                 for (int i = 0; i < solutions.Length; i++)
                 {
                     lock (solutions[i])
                     {
                         solutions[i].SetFitness();
+                        Logging_ObjectiveFunctionCalculations++;
                     }
                 }
                 Interlocked.Decrement(ref threadsRunning);
             }
 
-            void CalculateFitness(Solution[] solutions)
+            void CalculateFitness(SolutionGA[] solutions)
             {
-                List<Solution>[] subPopulations = new List<Solution>[current.ThreadsCount];
+                List<SolutionGA>[] subPopulations = new List<SolutionGA>[current.ThreadsCount];
 
                 for (int i = 0; i < solutions.Length; i++)
                 {
                     int index = (i + 1) % current.ThreadsCount;
                     if (object.Equals(subPopulations[index], null))
-                        subPopulations[index] = new List<Solution>();
+                        subPopulations[index] = new List<SolutionGA>();
                     subPopulations[index].Add(solutions[i]);
                 }
 
@@ -312,7 +313,7 @@ namespace inCapsulam.Optimization.Methods
                 Logging_ParentsCount.Add(parentsIds.Length);
 
                 if (parentsIds.Length < 2) return;
-                Solution[] childs = Crossover(parentsIds);
+                SolutionGA[] childs = Crossover(parentsIds);
 
                 for (int i = 0; i < childs.Length; i++)
                 {
@@ -324,7 +325,7 @@ namespace inCapsulam.Optimization.Methods
                 if (current.UseChildSelection)
                 {
                     int[] childIds = ChildSelection(childs);
-                    Solution[] childsNew = new Solution[childIds.Length];
+                    SolutionGA[] childsNew = new SolutionGA[childIds.Length];
                     for (int i = 0; i < childsNew.Length; i++)
                     {
                         childsNew[i] = childs[childIds[i]];
@@ -366,8 +367,8 @@ namespace inCapsulam.Optimization.Methods
                 Logging_BestFitness.Add(fitnesses[indexes.First()]);
                 Logging_AverageFitness.Add(fitnesses.Average());
                 Logging_WorstFitness.Add(fitnesses[indexes.Last()]);
-                Logging_BestSolution.Add(Population[populationIndexes[indexes.First()]].ParametersArray);
-                Logging_WorstSolution.Add(Population[populationIndexes[indexes.Last()]].ParametersArray);
+                Logging_BestSolution.Add(Population[populationIndexes[indexes.First()]].ParametersDouble);
+                Logging_WorstSolution.Add(Population[populationIndexes[indexes.Last()]].ParametersDouble);
                 Logging_FeasiblesCount.Add(feasiblesCount);
 
                 Various.OrderByDesc(ref cleanFitnessesArray, ref indexes, false);
@@ -383,7 +384,7 @@ namespace inCapsulam.Optimization.Methods
              * Selection operations block
              * 
              * */
-            private int[] ParentSelection(Solution[] parents)
+            private int[] ParentSelection(SolutionGA[] parents)
             {
                 switch (current.ParentSelectionMode)
                 {
@@ -397,7 +398,7 @@ namespace inCapsulam.Optimization.Methods
                 return SelectionTournament(parents).ToArray();
             }
 
-            private int[] ChildSelection(Solution[] childs)
+            private int[] ChildSelection(SolutionGA[] childs)
             {
                 switch (current.ParentSelectionMode)
                 {
@@ -411,7 +412,7 @@ namespace inCapsulam.Optimization.Methods
                 return SelectionTournament(childs).ToArray();
             }
 
-            private List<int> SelectionProportional(Solution[] solutions)
+            private List<int> SelectionProportional(SolutionGA[] solutions)
             {
                 // Parents indexes
                 List<int> parents = new List<int>();
@@ -463,7 +464,7 @@ namespace inCapsulam.Optimization.Methods
                 return parents;
             }
 
-            private List<int> SelectionRange(Solution[] solutions)
+            private List<int> SelectionRange(SolutionGA[] solutions)
             {
                 // Parents indexes
                 List<int> parents = new List<int>();
@@ -510,7 +511,7 @@ namespace inCapsulam.Optimization.Methods
                 return parents;
             }
 
-            private List<int> SelectionTournament(Solution[] solutions)
+            private List<int> SelectionTournament(SolutionGA[] solutions)
             {
                 // Parents indexes
                 List<int> parents = new List<int>();
@@ -522,7 +523,7 @@ namespace inCapsulam.Optimization.Methods
                 }
                 for (int i = 0; i < solutions.Length; i++)
                 {
-                    int[] tournamentSolutionsIndexes;
+                    int[] tournamentSolutionGAsIndexes;
                     if (current.UseLocalTournament)
                     {
                         double[] orderedProximities = new double[solutions.Length];
@@ -533,30 +534,30 @@ namespace inCapsulam.Optimization.Methods
                         int[] indexesOfProximities = new int[1];
                         // Reordering
                         Various.OrderByDesc(ref orderedProximities, ref indexesOfProximities, false);
-                        tournamentSolutionsIndexes = new int[current.TournamentSize];
-                        for (int j = 0; j < tournamentSolutionsIndexes.Length; j++)
+                        tournamentSolutionGAsIndexes = new int[current.TournamentSize];
+                        for (int j = 0; j < tournamentSolutionGAsIndexes.Length; j++)
                         {
-                            tournamentSolutionsIndexes[j] = indexesOfProximities[j];
+                            tournamentSolutionGAsIndexes[j] = indexesOfProximities[j];
                         }
                     }
                     else
                     {
-                        tournamentSolutionsIndexes = new int[current.TournamentSize];
+                        tournamentSolutionGAsIndexes = new int[current.TournamentSize];
                         int k = i;
-                        for (int j = 0; j < tournamentSolutionsIndexes.Length; j++)
+                        for (int j = 0; j < tournamentSolutionGAsIndexes.Length; j++)
                         {
-                            tournamentSolutionsIndexes[j] = k;
+                            tournamentSolutionGAsIndexes[j] = k;
                             k = k < solutions.Length - 1 ? k + 1 : 0;
                         }
                     }
-                    double bestFitness = fitnesses[tournamentSolutionsIndexes[0]];
-                    int bestFitnessIndex = tournamentSolutionsIndexes[0];
-                    for (int j = 0; j < tournamentSolutionsIndexes.Length; j++)
+                    double bestFitness = fitnesses[tournamentSolutionGAsIndexes[0]];
+                    int bestFitnessIndex = tournamentSolutionGAsIndexes[0];
+                    for (int j = 0; j < tournamentSolutionGAsIndexes.Length; j++)
                     {
-                        if (fitnesses[tournamentSolutionsIndexes[j]] > bestFitness)
+                        if (fitnesses[tournamentSolutionGAsIndexes[j]] > bestFitness)
                         {
-                            bestFitness = fitnesses[tournamentSolutionsIndexes[j]];
-                            bestFitnessIndex = tournamentSolutionsIndexes[j];
+                            bestFitness = fitnesses[tournamentSolutionGAsIndexes[j]];
+                            bestFitnessIndex = tournamentSolutionGAsIndexes[j];
                         }
                     }
                     if (!parents.Contains(bestFitnessIndex)) parents.Add(bestFitnessIndex);
@@ -569,10 +570,10 @@ namespace inCapsulam.Optimization.Methods
              * Crossover operations block
              * 
              * */
-            private Solution[] Crossover(int[] parents)
+            private SolutionGA[] Crossover(int[] parents)
             {
                 if (parents.Length < 2) return null;
-                List<Solution> Childs = new List<Solution>();
+                List<SolutionGA> Childs = new List<SolutionGA>();
                 int randomParentOne = 0;
                 int randomParentTwo = 0;
                 int randomPositionOne = 0;
@@ -590,7 +591,7 @@ namespace inCapsulam.Optimization.Methods
                         if (counter > 100) break;
                         counter++;
                     }
-                    Childs.Add(Solution.Crossover(Population[randomParentOne],
+                    Childs.Add(SolutionGA.Crossover(Population[randomParentOne],
                                                             Population[randomParentTwo]));
                     k = k < parents.Length - 1 ? k + 1 : 0;
                 }
@@ -603,7 +604,7 @@ namespace inCapsulam.Optimization.Methods
              * Post-selection operations block
              * 
              * */
-            private void PostSelection(Solution[] Childs)
+            private void PostSelection(SolutionGA[] Childs)
             {
                 if (current.UseElitism)
                 {
@@ -630,29 +631,29 @@ namespace inCapsulam.Optimization.Methods
                 }
             }
 
-            private void PostSelectionBest(Solution[] Childs)
+            private void PostSelectionBest(SolutionGA[] Childs)
             {
                 double[] mixedFitnesses = new double[Childs.Length + Population.Length];
-                Solution[] mixedSolutions = new Solution[Childs.Length + Population.Length];
+                SolutionGA[] mixedSolutionGAs = new SolutionGA[Childs.Length + Population.Length];
                 for (int i = 0; i < Childs.Length; i++)
                 {
                     mixedFitnesses[i] = Childs[i].Fitness;
-                    mixedSolutions[i] = Childs[i];
+                    mixedSolutionGAs[i] = Childs[i];
                 }
                 for (int i = Childs.Length; i < mixedFitnesses.Length; i++)
                 {
                     mixedFitnesses[i] = Population[i - Childs.Length].Fitness;
-                    mixedSolutions[i] = Population[i - Childs.Length];
+                    mixedSolutionGAs[i] = Population[i - Childs.Length];
                 }
-                int[] indexesOfMixedSolutions = new int[1];
-                Various.OrderByDesc(ref mixedFitnesses, ref indexesOfMixedSolutions, true);
+                int[] indexesOfMixedSolutionGAs = new int[1];
+                Various.OrderByDesc(ref mixedFitnesses, ref indexesOfMixedSolutionGAs, true);
                 for (int i = current.UseElitism ? 1 : 0; i < Population.Length; i++)
                 {
-                    Population[i] = mixedSolutions[indexesOfMixedSolutions[i - (current.UseElitism ? 1 : 0)]];
+                    Population[i] = mixedSolutionGAs[indexesOfMixedSolutionGAs[i - (current.UseElitism ? 1 : 0)]];
                 }
             }
 
-            private void PostSelectionHalfOldHalfNew(Solution[] Childs)
+            private void PostSelectionHalfOldHalfNew(SolutionGA[] Childs)
             {
                 List<double> parents = new List<double>();
                 List<double> childs = new List<double>();
@@ -681,7 +682,7 @@ namespace inCapsulam.Optimization.Methods
                 }
             }
 
-            private void PostSelectionNew(Solution[] Childs)
+            private void PostSelectionNew(SolutionGA[] Childs)
             {
                 List<double> childs = new List<double>();
 
@@ -727,7 +728,7 @@ namespace inCapsulam.Optimization.Methods
                 List<double[]> solutions = new List<double[]>();
                 for (int i = 0; i < Population.Length; i++)
                 {
-                    solutions.Add(Population[i].ParametersArray);
+                    solutions.Add(Population[i].ParametersDouble);
                 }
                 Correction.OneStepCorrectionMethod method = new Correction.OneStepCorrectionMethod(task);
                 List<double[]> corrected = method.correctSolutions(solutions);
@@ -736,42 +737,45 @@ namespace inCapsulam.Optimization.Methods
                 for (int i = 0; i < Population.Length; i++)
                 {
                     if (i >= corrected.Count) break;
-                    Population[Population.Length - i - 1].ParametersArray = corrected[i];
+                    Population[Population.Length - i - 1].ParametersDouble = corrected[i];
                 }
             }
         }
 
-        public class Solution
+        public class SolutionGA : Solution
         {
             Process parent;
-            public bool[][] Parameters;
+
+            public bool[][] ParametersBoolean;
             public double this[int index]
             {
                 get
                 {
-                    return DecodeVector(Parameters[index]);
+                    return DecodeVector(ParametersBoolean[index]);
                 }
                 set
                 {
-                    Parameters[index] = CodeVector(value);
+                    Parameters[index] = value;
+                    ParametersBoolean[index] = CodeVector(value);
                 }
             }
-            public double[] ParametersArray
+            public double[] ParametersDouble
             {
                 get
                 {
-                    double[] array = new double[Parameters.Length];
+                    double[] array = new double[ParametersBoolean.Length];
                     for (int i = 0; i < array.Length; i++)
                     {
-                        array[i] = DecodeVector(Parameters[i]);
+                        array[i] = DecodeVector(ParametersBoolean[i]);
                     }
                     return array;
                 }
                 set
                 {
-                    for (int i = 0; i < Parameters.Length; i++)
+                    for (int i = 0; i < ParametersBoolean.Length; i++)
                     {
-                        Parameters[i] = CodeVector(value[i]);
+                        ParametersBoolean[i] = CodeVector(value[i]);
+                        Parameters[i] = value[i];
                     }
                 }
             }
@@ -779,13 +783,15 @@ namespace inCapsulam.Optimization.Methods
             double _fitness;
             double _cleanFitness;
 
-            public Solution(Process parent, bool withRandomValues = false)
+            public SolutionGA(Process parent, bool withRandomValues = false)
             {
                 this.parent = parent;
-                Parameters = new bool[parent.task.Target.Parameters.Length][];
+                this.task = parent.task;
+                ParametersBoolean = new bool[parent.task.Target.Parameters.Length][];
+                Parameters = new double[ParametersBoolean.Length];
                 if (withRandomValues)
                 {
-                    for (int i = 0; i < Parameters.Length; i++)
+                    for (int i = 0; i < ParametersBoolean.Length; i++)
                     {
                         double l = parent.current.RightBorderOfFirstPopulationInterval - parent.current.LeftBorderOfFirstPopulationInterval;
                         this[i] = rndm.NextDouble() * l + parent.current.LeftBorderOfFirstPopulationInterval;
@@ -793,18 +799,19 @@ namespace inCapsulam.Optimization.Methods
                 }
                 else
                 {
-                    for (int i = 0; i < Parameters.Length; i++)
+                    for (int i = 0; i < ParametersBoolean.Length; i++)
                     {
-                        Parameters[i] = new bool[parent.current.BitCount];
+                        ParametersBoolean[i] = new bool[parent.current.BitCount];
                     }
                 }
             }
 
-            public Solution(Solution s)
+            public SolutionGA(SolutionGA s)
             {
                 this.parent = s.parent;
-                Parameters = new bool[parent.task.Target.Parameters.Length][];
-                for (int i = 0; i < Parameters.Length; i++)
+                this.task = s.task;
+                ParametersBoolean = new bool[parent.task.Target.Parameters.Length][];
+                for (int i = 0; i < ParametersBoolean.Length; i++)
                 {
                     this[i] = s[i];
                 }
@@ -823,9 +830,9 @@ namespace inCapsulam.Optimization.Methods
              * 
              * */
 
-            static public double[] FitnessCalculate(Solution s)
+            static public double[] FitnessCalculate(SolutionGA s)
             {
-                double[] x = s.ParametersArray;
+                double[] x = s.ParametersDouble;
                 s.parent.task.Target.Parameters = x;
 
                 s.parent.Logging_ObjectiveFunctionCalculations++;
@@ -899,7 +906,7 @@ namespace inCapsulam.Optimization.Methods
             double PenaltyNew(double[] x)
             {
                 double f = 0;
-                ParametersArray = x;
+                ParametersDouble = x;
                 if (IsFeasible)
                 {
                     parent.task.Target.Parameters = x;
@@ -980,47 +987,6 @@ namespace inCapsulam.Optimization.Methods
                     penalty += k * Math.Abs(value);
                 }
                 return penalty;
-            }
-
-            public double Violation
-            {
-                get
-                {
-                    return ViolationCalculate(this);
-                }
-            }
-
-            static public double ViolationCalculate(Solution s)
-            {
-                if (object.Equals(s.parent.task.Constraints, null)) return 0;
-                double value = 0;
-                for (int i = 0; i < s.parent.task.Constraints.Length; i++)
-                {
-                    s.parent.task.Constraints[i].Parameters = s.ParametersArray;
-                    double res = s.parent.task.Constraints[i].TargetFunction();
-                    if (s.parent.task.IsEquality[i])
-                    {
-                        res = Math.Abs(res);
-                        if (res >= s.parent.current.Precision) value += Math.Pow(res, 2);
-                    }
-                    else if (res <= s.parent.current.Precision)
-                    {
-                        value += Math.Pow(res, 2);
-                    }
-                }
-                return Math.Sqrt(value);
-            }
-
-            public bool IsFeasible
-            {
-                get
-                {
-                    if (Violation > parent.current.Precision)
-                    {
-                        return false;
-                    }
-                    else return true;
-                }
             }
 
             /*
@@ -1144,13 +1110,13 @@ namespace inCapsulam.Optimization.Methods
             bool MutationBoolean()
             {
                 bool changed = false;
-                for (int i = 0; i < Parameters.Length; i++)
+                for (int i = 0; i < ParametersBoolean.Length; i++)
                 {
-                    for (int j = 0; j < Parameters[i].Length; j++)
+                    for (int j = 0; j < ParametersBoolean[i].Length; j++)
                     {
                         if (rndm.NextDouble() <= parent.current.MutationCoefficient)
                         {
-                            Parameters[i][j] = !Parameters[i][j];
+                            ParametersBoolean[i][j] = !ParametersBoolean[i][j];
                             changed = true;
                         }
                     }
@@ -1163,7 +1129,7 @@ namespace inCapsulam.Optimization.Methods
                 double k = Math.Log(parent.current.IterationsMaxNumber / (parent.CurrentIteration + 1));
                 k /= Math.Log(parent.current.IterationsMaxNumber);
 
-                for (int j = 0; j < Parameters.Length; j++)
+                for (int j = 0; j < ParametersBoolean.Length; j++)
                 {
                     double l = parent.current.RightBorderOfFirstPopulationInterval - parent.current.LeftBorderOfFirstPopulationInterval;
                     double r = rndm.NextDouble() * l + parent.current.LeftBorderOfFirstPopulationInterval;
@@ -1179,10 +1145,10 @@ namespace inCapsulam.Optimization.Methods
              * 
              * */
 
-            static public Solution Crossover(Solution s1, Solution s2)
+            static public SolutionGA Crossover(SolutionGA s1, SolutionGA s2)
             {
                 if (!object.Equals(s1.parent, s2.parent)) throw new Exception("GA crossover exception: parent processes mismatch.");
-                Solution sNew = null;
+                SolutionGA sNew = null;
                 switch (s1.parent.current.CrossoverMode)
                 {
                     case Settings.CrossoverReal:
@@ -1199,12 +1165,12 @@ namespace inCapsulam.Optimization.Methods
                 return sNew;
             }
 
-            static private Solution CrossoverTwoPoints(Solution s1, Solution s2)
+            static private SolutionGA CrossoverTwoPoints(SolutionGA s1, SolutionGA s2)
             {
-                Solution sNew = new Solution(s1.parent);
+                SolutionGA sNew = new SolutionGA(s1.parent);
                 int positionOne = 0;
                 int positionTwo = 0;
-                for (int i = 0; i < s1.Parameters.Length; i++)
+                for (int i = 0; i < s1.ParametersBoolean.Length; i++)
                 {
                     int counter = 0;
                     while (positionOne == positionTwo)
@@ -1216,75 +1182,52 @@ namespace inCapsulam.Optimization.Methods
                     }
                     for (int j = 0; j < positionOne; j++)
                     {
-                        sNew.Parameters[i][j] = s1.Parameters[i][j];
+                        sNew.ParametersBoolean[i][j] = s1.ParametersBoolean[i][j];
                     }
                     for (int j = positionOne; j < positionTwo; j++)
                     {
                         if (j == s1.parent.current.BitCount) j = 0;
-                        sNew.Parameters[i][j] = s2.Parameters[i][j];
+                        sNew.ParametersBoolean[i][j] = s2.ParametersBoolean[i][j];
                     }
                     if (positionTwo > positionOne)
                     {
                         for (int j = positionTwo; j < s1.parent.current.BitCount; j++)
                         {
-                            sNew.Parameters[i][j] = s1.Parameters[i][j];
+                            sNew.ParametersBoolean[i][j] = s1.ParametersBoolean[i][j];
                         }
                     }
                 }
                 return sNew;
             }
 
-            static private Solution CrossoverUniform(Solution s1, Solution s2)
+            static private SolutionGA CrossoverUniform(SolutionGA s1, SolutionGA s2)
             {
-                Solution sNew = new Solution(s1.parent);
-                for (int i = 0; i < sNew.Parameters.Length; i++)
+                SolutionGA sNew = new SolutionGA(s1.parent);
+                for (int i = 0; i < sNew.ParametersBoolean.Length; i++)
                 {
-                    for (int j = 0; j < sNew.Parameters[i].Length; j++)
+                    for (int j = 0; j < sNew.ParametersBoolean[i].Length; j++)
                     {
                         if (rndm.NextDouble() > 0.5)
                         {
-                            sNew.Parameters[i][j] = s1.Parameters[i][j];
+                            sNew.ParametersBoolean[i][j] = s1.ParametersBoolean[i][j];
                         }
                         else
                         {
-                            sNew.Parameters[i][j] = s2.Parameters[i][j];
+                            sNew.ParametersBoolean[i][j] = s2.ParametersBoolean[i][j];
                         }
                     }
                 }
                 return sNew;
             }
 
-            static private Solution CrossoverReal(Solution s1, Solution s2)
+            static private SolutionGA CrossoverReal(SolutionGA s1, SolutionGA s2)
             {
-                Solution sNew = new Solution(s1.parent);
-                for (int i = 0; i < sNew.Parameters.Length; i++)
+                SolutionGA sNew = new SolutionGA(s1.parent);
+                for (int i = 0; i < sNew.ParametersBoolean.Length; i++)
                 {
                     sNew[i] = (s1[i] + s2[i]) / 2;
                 }
                 return sNew;
-            }
-
-            /*
-             * 
-             * Correction operations block starts
-             * 
-             * */
-
-            static public Solution Attract(Solution good, Solution bad)
-            {
-                Solution s = new Solution(good.parent);
-                s.ParametersArray = bad.ParametersArray;
-                Vector A = new Vector(good.ParametersArray);
-                Vector B = new Vector(bad.ParametersArray);
-                Vector C = new Vector(B.Values);
-                while (!s.IsFeasible)
-                {
-                    C = A + (C - A) * rndm.NextDouble();
-                    if ((C - A).EuklidNorm < s.parent.current.Precision) break;
-                    s.ParametersArray = C.Values;
-                }
-                s.SetFitness();
-                return s;
             }
         }
     }

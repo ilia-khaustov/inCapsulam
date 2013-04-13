@@ -55,7 +55,7 @@ namespace inCapsulam.Optimization.Targets
         {
             get
             {
-                return "Код на JavaScript";
+                return jsCode.Replace("\n", "\n\t");
             }
         }
     }

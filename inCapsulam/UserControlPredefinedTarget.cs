@@ -42,7 +42,7 @@ namespace inCapsulam
         private void saveButton_Click(object sender, EventArgs e)
         {
             Program.TaskCurrent.Target = new PreDefinedTarget((short)functionsComboBox.SelectedIndex, (short)variablesCountSpin.Value);
-            Program.TaskCurrent.TargetType = Task.TargetType_PreDefinedFunction;
+            Program.TaskCurrent.TargetType = Optimization.Task.TargetType_PreDefinedFunction;
             if (object.Equals(Program.TaskCurrent.Constraints, null)) return;
             else
             {

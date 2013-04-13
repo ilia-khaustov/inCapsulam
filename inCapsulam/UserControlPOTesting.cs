@@ -54,7 +54,6 @@ namespace inCapsulam
                     new Optimization.Correction.OneStepCorrectionMethod(Program.TaskCurrent);
 
                 double qualitySamples = 0;
-                int violations = 0;
 
                 for (int i = 0; i < samplesStrings.Length; i++)
                 {
@@ -64,15 +63,13 @@ namespace inCapsulam
                     {
                         newSample[j] = double.Parse(newSampleString[j]);
                     }
-                    qualitySamples += Program.TaskCurrent.Target.Calculate(newSample);
-                    violations += method.violationOf(newSample) > Program.TaskCurrent.ga_Settings.Precision ? 1 : 0;
+                    qualitySamples += Program.TaskCurrent.EstimatePoint(newSample);
                     samples.Add(newSample);
                 }
 
                 qualitySamples /= samplesString.Length;
-                qualitySamples = Math.Pow(qualitySamples, (violations/Program.TaskCurrent.Constraints.Length)+1);
-                qualitySamples = 1 / (qualitySamples + 1);
                 textBoxInfo.Text += "Качество выборки:\r\n\t" + qualitySamples + "\r\n";
+
                 List<double[]> corrected = method.correctSolutions(samples);
 
                 textBoxResult.Text = "";
@@ -84,11 +81,10 @@ namespace inCapsulam
                     {
                         textBoxResult.Text += corrected[i][j] + " ";
                     }
-                    qualityResult += Program.TaskCurrent.Target.Calculate(corrected[i]);
+                    qualityResult += Program.TaskCurrent.EstimatePoint(corrected[i]);
                     textBoxResult.Text += "\r\n";
                 }
                 qualityResult /= corrected.Count;
-                qualityResult = 1 / (qualityResult + 1);
                 textBoxInfo.Text += "Качество исправленной выборки:\r\n\t" + qualityResult + "\r\n";
                 textBoxInfo.Text += "Количество вычислений:\r\n\t" + method.calculations + "\r\n";
             }
