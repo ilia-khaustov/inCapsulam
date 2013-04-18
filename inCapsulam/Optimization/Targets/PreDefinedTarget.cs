@@ -16,6 +16,7 @@ namespace inCapsulam.Optimization.Targets
         public const short Griewank = 4;
         public const short Rozenbrok = 5;
         public const short ParabolaWithWait = 6;
+        public const short SopovFunction = 7;
 
         public short IdSelected;
 
@@ -39,6 +40,8 @@ namespace inCapsulam.Optimization.Targets
                         return "Функция Розенброка";
                     case ParabolaWithWait:
                         return "Парабола с задержкой";
+                    case SopovFunction:
+                        return "Функция Сопова";
                     default:
                         return "Константа";
                 }
@@ -97,6 +100,8 @@ namespace inCapsulam.Optimization.Targets
                     return Function.Rozenbrok(Parameters[0], Parameters[1]) + error;
                 case ParabolaWithWait:
                     return Function.ParabolaWithWait(Parameters) + error;
+                case SopovFunction:
+                    return Function.SopovFunction(Parameters[0], Parameters[1]) + error;
                 default:
                     return 0 + error;
             }

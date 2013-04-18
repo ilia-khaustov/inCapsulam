@@ -81,7 +81,8 @@
             "Функция \"Сомбреро\"",
             "Функция Гривонка",
             "Функция Розенброка",
-            "Парабола с задержкой"});
+            "Парабола с задержкой",
+            "Функция Сопова"});
             this.functionsComboBox.Location = new System.Drawing.Point(0, 18);
             this.functionsComboBox.Name = "functionsComboBox";
             this.functionsComboBox.Size = new System.Drawing.Size(283, 23);

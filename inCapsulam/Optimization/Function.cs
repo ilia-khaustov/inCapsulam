@@ -94,5 +94,18 @@ namespace inCapsulam.Optimization
 
             return fibo;
         }
+
+        public static double SopovFunction(double x, double y)
+        {
+            double alpha = Math.PI / 2;
+            double kx = 1.5;
+            double ky = 0.8;
+            double A = x * Math.Cos(alpha) - y * Math.Sin(alpha);
+            double B = x * Math.Sin(alpha) + y * Math.Cos(alpha);
+            return Math.Pow(0.1 * kx * A, 2) + 
+                Math.Pow(0.1 * ky * B, 2) - 
+                4 * Math.Cos(0.8 * kx * A) - 
+                4 * Math.Cos(0.8 * ky * B) + 8;
+        }
     }
 }
