@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Windows.Forms;
+using inCapsulam.Optimization.Targets;
 
 namespace inCapsulam
 {
@@ -16,6 +17,7 @@ namespace inCapsulam
         ZedGraph.LineItem average = new ZedGraph.LineItem("Среднее");
         ZedGraph.LineItem worst = new ZedGraph.LineItem("Худшее");
         ZedGraph.LineItem populationValues = new ZedGraph.LineItem("Значения в популяции");
+        ZedGraph.LineItem[] rects;
 
         public UserControlSingleResult()
         {
@@ -54,6 +56,26 @@ namespace inCapsulam
             showBest.Checked = true;
             showWorst.Checked = true;
             showAverage.Checked = true;
+            zedGraphControlDemo.GraphPane.Title.Text = "";
+            zedGraphControlDemo.GraphPane.XAxis.Title.Text = "";
+            zedGraphControlDemo.GraphPane.YAxis.Title.Text = "";
+            zedGraphControlDemo.GraphPane.XAxis.MajorGrid.IsVisible = true;
+            zedGraphControlDemo.GraphPane.YAxis.MajorGrid.IsVisible = true;
+            zedGraphControlDemo.GraphPane.YAxis.MajorGrid.IsZeroLine = false;
+            if (Program.TaskCurrent.Target.GetType() == typeof(RectanglesTarget))
+            {
+                rects = new ZedGraph.LineItem[((RectanglesTarget)Program.TaskCurrent.Target).Heights.Length];
+                for (int i = 0; i < rects.Length; i++)
+                {
+                    rects[i] = new ZedGraph.LineItem("");
+                    rects[i].Symbol.Type = ZedGraph.SymbolType.None;
+                    rects[i].Line.Fill.Type = ZedGraph.FillType.Solid;
+                    rects[i].Line.Color = Color.DimGray;
+                    rects[i].Line.Fill.Color = Color.CornflowerBlue;
+                    rects[i].Line.Width = 1;
+                    zedGraphControlDemo.GraphPane.CurveList.Add(rects[i]);
+                }
+            }
             UserControlSingleResult_Resize(this, new EventArgs());
         }
 
@@ -67,6 +89,8 @@ namespace inCapsulam
             buttonSaveToFile.Location = new Point(buttonSaveToFile.Location.X, tabControlDefault.Height - 58);
             fitnessGraph.Width = tabControlDefault.Width - 20;
             fitnessGraph.Height = tabControlDefault.Height - 65;
+            zedGraphControlDemo.Width = tabControlDefault.Width - 20;
+            zedGraphControlDemo.Height = tabControlDefault.Height - 65;
             valueGraph.Width = tabControlDefault.Width - 20;
             valueGraph.Height = tabControlDefault.Height - 56;
             generationNumber.Width = tabControlDefault.Width - 20;
@@ -80,6 +104,23 @@ namespace inCapsulam
                 best.AddPoint(i, Program.TaskCurrent.ga_Process.Logging_BestFitness[i]);
                 average.AddPoint(i, Program.TaskCurrent.ga_Process.Logging_AverageFitness[i]);
                 worst.AddPoint(i, Program.TaskCurrent.ga_Process.Logging_WorstFitness[i]);
+            }
+            if (Program.TaskCurrent.Target.GetType() == typeof(RectanglesTarget))
+            {
+                double[] s = Program.TaskCurrent.ga_Process.Logging_BestSolution.Last();
+                int index = 0;
+                double[] widths = ((RectanglesTarget)Program.TaskCurrent.Target).Widths;
+                double[] heights = ((RectanglesTarget)Program.TaskCurrent.Target).Heights;
+                for (int i = 0; i < s.Length; i += 2)
+                {
+                    rects[index].AddPoint(s[i], s[i + 1]);
+                    rects[index].AddPoint(s[i] + widths[index], s[i + 1]);
+                    rects[index].AddPoint(s[i] + widths[index], s[i + 1] + heights[index]);
+                    rects[index].AddPoint(s[i], s[i + 1] + heights[index]);
+                    rects[index].AddPoint(s[i], s[i + 1]);
+                    index++;
+                }
+                RefreshDemoGraph();
             }
             RefreshFitnessGraph();
             RefreshValuesGraph();
@@ -129,6 +170,14 @@ namespace inCapsulam
             fitnessGraph.GraphPane.YAxis.Scale.MinAuto = true;
             fitnessGraph.Invalidate();
             fitnessGraph.AxisChange();
+        }
+
+        void RefreshDemoGraph()
+        {
+            zedGraphControlDemo.GraphPane.YAxis.Scale.MaxAuto = true;
+            zedGraphControlDemo.GraphPane.YAxis.Scale.MinAuto = true;
+            zedGraphControlDemo.Invalidate();
+            zedGraphControlDemo.AxisChange();
         }
 
         void RefreshValuesGraph()

@@ -88,6 +88,7 @@
     <Compile Include="Optimization\Targets\ITarget.cs" />
     <Compile Include="Optimization\Targets\JsTarget.cs" />
     <Compile Include="Optimization\Targets\PreDefinedTarget.cs" />
+    <Compile Include="Optimization\Targets\RectanglesTarget.cs" />
     <Compile Include="Optimization\Task.cs" />
     <Compile Include="Extensions\info.lundin.math.cs" />
     <Compile Include="Extensions\ObjectCopier.cs" />
@@ -117,6 +118,12 @@
     </Compile>
     <Compile Include="UserControlPOTesting.Designer.cs">
       <DependentUpon>UserControlPOTesting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControlRectanglesTarget.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControlRectanglesTarget.Designer.cs">
+      <DependentUpon>UserControlRectanglesTarget.cs</DependentUpon>
     </Compile>
     <Compile Include="UserControlTasksList.cs">
       <SubType>UserControl</SubType>
@@ -177,6 +184,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UserControlPOTesting.resx">
       <DependentUpon>UserControlPOTesting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControlRectanglesTarget.resx">
+      <DependentUpon>UserControlRectanglesTarget.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserControlTasksList.resx">
       <DependentUpon>UserControlTasksList.cs</DependentUpon>

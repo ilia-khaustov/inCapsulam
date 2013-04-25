@@ -122,25 +122,72 @@ namespace inCapsulam.Rectangles
             double[] newFirstPoint = new double[r1.Dims];
             double[] newSecondPoint = new double[r1.Dims];
 
+            // going through each projection
             for (int i = 0; i < r1.Dims; i++)
             {
-                if (isBetween(r2.FirstPoint[i], r1.FirstPoint[i], r1.SecondPoint[i]))
+                double a1, a2, b1, b2; // such as a2 > a1 and b2 > b1
+
+                if (r1.FirstPoint[i] >= r1.SecondPoint[i])
                 {
-                    newFirstPoint[i] = r2.FirstPoint[i];
-                    if (isBetween(r2.SecondPoint[i], r1.FirstPoint[i], r1.SecondPoint[i]))
-                    {
-                        newSecondPoint[i] = r2.SecondPoint[i];
-                    }
+                    a1 = r1.SecondPoint[i];
+                    a2 = r1.FirstPoint[i];
                 }
                 else
                 {
-                    if (isBetween(r2.SecondPoint[i], r1.FirstPoint[i], r1.SecondPoint[i]))
-                    {
-                        newFirstPoint[i] = r1.FirstPoint[i];
-                        newSecondPoint[i] = r2.SecondPoint[i];
-                    }
+                    a1 = r1.FirstPoint[i];
+                    a2 = r1.SecondPoint[i];
+                }
+                if (r2.FirstPoint[i] >= r2.SecondPoint[i])
+                {
+                    b1 = r2.SecondPoint[i];
+                    b2 = r2.FirstPoint[i];
+                }
+                else
+                {
+                    b1 = r2.FirstPoint[i];
+                    b2 = r2.SecondPoint[i];
                 }
 
+                /*
+                 *      a1-------a2
+                 * b1------------------b2
+                 * 
+                 * */
+                if (a2 <= b2 && a1 >= b1)
+                {
+                    newFirstPoint[i] = a1;
+                    newSecondPoint[i] = a2;
+                }
+                /*
+                 * a1----------------a2
+                 *      b1------b2
+                 * 
+                 * */
+                else if (a2 >= b2 && a1 <= b1)
+                {
+                    newFirstPoint[i] = b1;
+                    newSecondPoint[i] = b2;
+                }
+                /*
+                 * a1--------------a2
+                 *       b1---------------b2
+                 * 
+                 * */
+                else if (a1 <= b1 && a2 <= b2 && a2 >= b1)
+                {
+                    newFirstPoint[i] = b1;
+                    newSecondPoint[i] = a2;
+                }
+                /*
+                 *        a1--------------a2
+                 * b1---------------b2
+                 * 
+                 * */
+                else if (a1 <= b2 && a1 >= b1 && a2 >= b2)
+                {
+                    newFirstPoint[i] = a1;
+                    newSecondPoint[i] = b2;
+                }
                 
             }
 
@@ -159,7 +206,7 @@ namespace inCapsulam.Rectangles
             }
             else
             {
-                throw new Exception("Segment is null");
+                return false;
             }
         }
     }

@@ -42,10 +42,13 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.generationNumber = new System.Windows.Forms.HScrollBar();
             this.valueGraph = new ZedGraph.ZedGraphControl();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.zedGraphControlDemo = new ZedGraph.ZedGraphControl();
             this.tabControlDefault.SuspendLayout();
             this.tabPageCommon.SuspendLayout();
             this.tabPageGraphFitness.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControlDefault
@@ -53,6 +56,7 @@
             this.tabControlDefault.Controls.Add(this.tabPageCommon);
             this.tabControlDefault.Controls.Add(this.tabPageGraphFitness);
             this.tabControlDefault.Controls.Add(this.tabPage1);
+            this.tabControlDefault.Controls.Add(this.tabPage2);
             this.tabControlDefault.Location = new System.Drawing.Point(3, 3);
             this.tabControlDefault.Name = "tabControlDefault";
             this.tabControlDefault.SelectedIndex = 0;
@@ -197,6 +201,30 @@
             this.valueGraph.Size = new System.Drawing.Size(456, 311);
             this.valueGraph.TabIndex = 0;
             // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.zedGraphControlDemo);
+            this.tabPage2.Location = new System.Drawing.Point(4, 24);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Size = new System.Drawing.Size(468, 339);
+            this.tabPage2.TabIndex = 3;
+            this.tabPage2.Text = "Демонстрация";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // zedGraphControlDemo
+            // 
+            this.zedGraphControlDemo.Location = new System.Drawing.Point(0, 0);
+            this.zedGraphControlDemo.Name = "zedGraphControlDemo";
+            this.zedGraphControlDemo.ScrollGrace = 0D;
+            this.zedGraphControlDemo.ScrollMaxX = 0D;
+            this.zedGraphControlDemo.ScrollMaxY = 0D;
+            this.zedGraphControlDemo.ScrollMaxY2 = 0D;
+            this.zedGraphControlDemo.ScrollMinX = 0D;
+            this.zedGraphControlDemo.ScrollMinY = 0D;
+            this.zedGraphControlDemo.ScrollMinY2 = 0D;
+            this.zedGraphControlDemo.Size = new System.Drawing.Size(468, 336);
+            this.zedGraphControlDemo.TabIndex = 0;
+            // 
             // UserControlSingleResult
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -212,6 +240,7 @@
             this.tabPageGraphFitness.ResumeLayout(false);
             this.tabPageGraphFitness.PerformLayout();
             this.tabPage1.ResumeLayout(false);
+            this.tabPage2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -231,5 +260,7 @@
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.HScrollBar generationNumber;
         private ZedGraph.ZedGraphControl valueGraph;
+        private System.Windows.Forms.TabPage tabPage2;
+        private ZedGraph.ZedGraphControl zedGraphControlDemo;
     }
 }

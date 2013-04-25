@@ -6,8 +6,6 @@ using inCapsulam.Optimization;
 
 namespace inCapsulam
 {
-
-
     [Serializable()]
     public class AssignmentTaskTarget : BlackBox
     {

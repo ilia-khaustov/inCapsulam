@@ -25,6 +25,12 @@ namespace inCapsulam
                 expressionTextBox.Enabled = false;
                 expressionTextBox.Text = "Сначала следует задать объект исследования.";
             }
+            else if (Program.TaskCurrent.Target.GetType() == typeof(RectanglesTarget))
+            {
+                expressionTextBox.Font = new Font(expressionTextBox.Font.FontFamily, 18);
+                expressionTextBox.Enabled = false;
+                expressionTextBox.Text = "Выберите другой объект исследования.";
+            }
             else
             {
                 buttonRemove.Enabled = false;
@@ -39,9 +45,12 @@ namespace inCapsulam
             if (object.Equals(Program.TaskCurrent.Constraints, null)) return;
             for (int i = 0; i < Program.TaskCurrent.Constraints.Length; i++)
             {
-                constraintsListBox.Items.Add(
-                    ((UserDefinedTarget)Program.TaskCurrent.Constraints[i]).expression +
-                    (Program.TaskCurrent.IsEquality[i] ? " = 0" : " >= 0"));
+                if (Program.TaskCurrent.Constraints[i].GetType() == typeof(UserDefinedTarget))
+                {
+                    constraintsListBox.Items.Add(
+                        ((UserDefinedTarget)Program.TaskCurrent.Constraints[i]).expression +
+                        (Program.TaskCurrent.IsEquality[i] ? " = 0" : " >= 0"));
+                }
             }
             if (tempIndex >= 0)
             {

@@ -285,7 +285,7 @@ namespace inCapsulam.Optimization
 
             r += "Минимальное значение:\n\t" + Various.DoubleToString(
                 p.Logging_BestValue.Last(),
-                ga_Settings.DigitsAfterPoint) +
+                5) +
                 "\n";
             r += "Лучшая точка:\n\t";
             for (int i = 0; i < Target.Parameters.Length; i++)
@@ -325,9 +325,17 @@ namespace inCapsulam.Optimization
                 r += "Cписок ограничений:\n\t";
                 for (int i = 0; i < Constraints.Length; i++)
                 {
-                    r += ((UserDefinedTarget)Constraints[i]).expression;
-                    if (IsEquality[i]) r += " = 0\n\t";
-                    else r += " >= 0\n\t";
+                    if (typeof(UserDefinedTarget) == Constraints[i].GetType())
+                    {
+                        r += ((UserDefinedTarget)Constraints[i]).expression;
+                        if (IsEquality[i]) r += " = 0\n\t";
+                        else r += " >= 0\n\t";
+                    }
+                    else if (typeof(RectanglesTarget.Constraint_NoIntersection) == Constraints[i].GetType())
+                    {
+                        double value = ((RectanglesTarget.Constraint_NoIntersection)Constraints[i]).Calculate(ga_Process.Logging_BestSolution.Last());
+                        r += "Площадь пересечения: " + value + "\n\t";
+                    }
                 }
             }
             r += "\n";

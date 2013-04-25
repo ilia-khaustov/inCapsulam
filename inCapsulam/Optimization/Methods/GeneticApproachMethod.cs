@@ -245,7 +245,7 @@ namespace inCapsulam.Optimization.Methods
                 AverageFitness = 0;
                 for (int i = 0; i < Population.Length; i++)
                 {
-                    AverageFitness += 1 / (1 + Population[i].CleanFitness - current.ObjectiveFunctionMinValue);
+                    AverageFitness += 1 / (1 + Population[i].Value - current.ObjectiveFunctionMinValue);
                 }
                 AverageFitness /= Population.Length;
             }
@@ -342,39 +342,47 @@ namespace inCapsulam.Optimization.Methods
 
             void Log()
             {
-                List<double> fitnesses = new List<double>();
                 List<int> populationIndexes = new List<int>();
+                List<double> fitnesses = new List<double>();
                 List<double> cleanFitnesses = new List<double>();
+                List<double> values = new List<double>();
 
                 int feasiblesCount = 0;
                 int[] indexes = new int[1];
                 for (int i = 0; i < Population.Length; i++)
                 {
-                    fitnesses.Add(Population[i].Fitness);
                     cleanFitnesses.Add(Population[i].CleanFitness);
+                    values.Add(Population[i].Value);
+                    fitnesses.Add(Population[i].Fitness);
+
                     populationIndexes.Add(i);
+
                     if (Population[i].IsFeasible)
                     {
                         feasiblesCount++;
                     }
                 }
 
-                double[] fitnessesArray = fitnesses.ToArray();
                 double[] cleanFitnessesArray = cleanFitnesses.ToArray();
-                Logging_PopulationValues.Add(cleanFitnessesArray);
+                double[] valuesArray = values.ToArray();
+                double[] fitnessesArray = fitnesses.ToArray();
+
+                Logging_PopulationValues.Add(valuesArray);
+
+                Various.OrderByDesc(ref cleanFitnessesArray, ref indexes, true);
+                Logging_BestFitness.Add(cleanFitnesses[indexes.First()]);
+                Logging_AverageFitness.Add(cleanFitnesses.Average());
+                Logging_WorstFitness.Add(cleanFitnesses[indexes.Last()]);
 
                 Various.OrderByDesc(ref fitnessesArray, ref indexes, true);
-                Logging_BestFitness.Add(fitnesses[indexes.First()]);
-                Logging_AverageFitness.Add(fitnesses.Average());
-                Logging_WorstFitness.Add(fitnesses[indexes.Last()]);
                 Logging_BestSolution.Add(Population[populationIndexes[indexes.First()]].ParametersDouble);
                 Logging_WorstSolution.Add(Population[populationIndexes[indexes.Last()]].ParametersDouble);
                 Logging_FeasiblesCount.Add(feasiblesCount);
 
-                Various.OrderByDesc(ref cleanFitnessesArray, ref indexes, false);
-                Logging_BestValue.Add(cleanFitnessesArray[0]);
-                Logging_WorstValue.Add(cleanFitnessesArray.Last());
-                Logging_AverageValue.Add(cleanFitnessesArray.Average());
+                Various.OrderByDesc(ref valuesArray, ref indexes, false);
+                Logging_BestValue.Add(valuesArray[0]);
+                Logging_WorstValue.Add(valuesArray.Last());
+                Logging_AverageValue.Add(valuesArray.Average());
 
                 Logging_TimeElapsed = swatch.ElapsedMilliseconds;
             }
@@ -796,6 +804,7 @@ namespace inCapsulam.Optimization.Methods
 
             double _fitness;
             double _cleanFitness;
+            double _value;
 
             public SolutionGA(Process parent, bool withRandomValues = false)
             {
@@ -834,8 +843,9 @@ namespace inCapsulam.Optimization.Methods
             public void SetFitness()
             {
                 double[] fitnessArray = FitnessCalculate(this);
-                _fitness = fitnessArray[0];
+                _fitness = fitnessArray[2];
                 _cleanFitness = fitnessArray[1];
+                _value = fitnessArray[0];
             }
 
             /*
@@ -853,11 +863,13 @@ namespace inCapsulam.Optimization.Methods
 
                 double fitness = s.parent.task.Target.TargetFunction();
 
-                double[] fitnessArray = new double[2] { fitness, fitness };
+                double[] fitnessArray = new double[3] { fitness, fitness, fitness }; // value, clean, used
 
                 fitness = 1 / (fitness + 1 - s.parent.current.ObjectiveFunctionMinValue);
 
-                fitnessArray[0] = fitness;
+                fitnessArray[1] = fitness;
+
+                fitnessArray[2] = fitness;
 
                 if (!object.Equals(s.parent.task.Constraints, null))
                 {
@@ -866,13 +878,13 @@ namespace inCapsulam.Optimization.Methods
                         case Settings.PenaltyEmpty:
                             break;
                         case Settings.PenaltyDynamic:
-                            fitnessArray[0] -= s.PenaltyDynamic(x);
+                            fitnessArray[2] -= s.PenaltyDynamic(x);
                             break;
                         case Settings.PenaltyConstraint:
-                            fitnessArray[0] = s.Violation;
+                            fitnessArray[2] = s.Violation;
                             break;
                         case Settings.PenaltyAdaptive:
-                            fitnessArray[0] -= s.PenaltyAdaptive(x);
+                            fitnessArray[2] -= s.PenaltyAdaptive(x);
                             break;
                     }
                 }
@@ -893,6 +905,14 @@ namespace inCapsulam.Optimization.Methods
                 get
                 {
                     return _cleanFitness;
+                }
+            }
+
+            public double Value
+            {
+                get
+                {
+                    return _value;
                 }
             }
 

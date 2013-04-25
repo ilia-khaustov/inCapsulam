@@ -48,6 +48,12 @@ namespace inCapsulam
             {
                 for (int i = 0; i < Program.TaskCurrent.Constraints.Length; i++)
                 {
+                    if (Program.TaskCurrent.Constraints[i].GetType() != typeof(UserDefinedTarget))
+                    {
+                        Program.TaskCurrent.RemoveConstraint(i);
+                        i--;
+                        continue;
+                    }
                     if (!Program.TaskCurrent.CheckConstraint(((UserDefinedTarget)Program.TaskCurrent.Constraints[i]).expression))
                     {
                         Program.TaskCurrent.RemoveConstraint(i);

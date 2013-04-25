@@ -361,5 +361,10 @@ namespace inCapsulam
         {
             ChangeUserControl(new UserControlPOTesting(), "Тестирование пост-оптимизации");
         }
+
+        private void задачаОРазмещенииToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ChangeUserControl(new UserControlRectanglesTarget(), "Задача о размещении прямоугольников на плоскости");
+        }
     }
 }
