@@ -6,6 +6,8 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using inCapsulam.Optimization;
+using inCapsulam.Optimization.Methods;
 
 namespace inCapsulam
 {
@@ -49,7 +51,7 @@ namespace inCapsulam
                 textBoxInfo.Text = "";
                 string samplesString = textBoxSamples.Text;
                 string[] samplesStrings = samplesString.Split(new string[1] { "\r\n" }, StringSplitOptions.None);
-                List<double[]> samples = new List<double[]>();
+                List<Solution> samples = new List<Solution>();
                 Optimization.Correction.OneStepCorrectionMethod method =
                     new Optimization.Correction.OneStepCorrectionMethod(Program.TaskCurrent);
 
@@ -58,30 +60,31 @@ namespace inCapsulam
                 for (int i = 0; i < samplesStrings.Length; i++)
                 {
                     string[] newSampleString = samplesStrings[i].Split(new string[1] { " " }, StringSplitOptions.None);
-                    double[] newSample = new double[newSampleString.Length];
+                    GeneticApproachMethod.SolutionGA newSample = new GeneticApproachMethod.SolutionGA(
+                        new GeneticApproachMethod.Process(Program.TaskCurrent, Program.TaskCurrent.ga_Settings));
                     for (int j = 0; j < newSampleString.Length; j++)
                     {
                         newSample[j] = double.Parse(newSampleString[j]);
                     }
-                    qualitySamples += Program.TaskCurrent.EstimatePoint(newSample);
+                    qualitySamples += Program.TaskCurrent.EstimatePoint(newSample.ParametersDouble);
                     samples.Add(newSample);
                 }
 
                 qualitySamples /= samplesString.Length;
                 textBoxInfo.Text += "Качество выборки:\r\n\t" + qualitySamples + "\r\n";
 
-                List<double[]> corrected = method.correctSolutions(samples);
+                List<Solution> corrected = method.correctSolutions(samples);
 
                 textBoxResult.Text = "";
                 double qualityResult = 0;
 
                 for (int i = 0; i < corrected.Count; i++)
                 {
-                    for (int j = 0; j < corrected[i].Length; j++)
+                    for (int j = 0; j < corrected[i].Parameters.Length; j++)
                     {
-                        textBoxResult.Text += corrected[i][j] + " ";
+                        textBoxResult.Text += corrected[i].Parameters[j] + " ";
                     }
-                    qualityResult += Program.TaskCurrent.EstimatePoint(corrected[i]);
+                    qualityResult += Program.TaskCurrent.EstimatePoint(corrected[i].Parameters);
                     textBoxResult.Text += "\r\n";
                 }
                 qualityResult /= corrected.Count;

@@ -88,7 +88,7 @@ namespace inCapsulam
             Rectangle r = (Rectangle)num;
             int i = 0;
             RectanglesTarget target = (RectanglesTarget)(Program.TaskCurrent.Target);
-            double precision = 0.01;
+            double precision = 0.1;
             while (isDrawing)
             {
                 r.Width = MousePosition.X - r.Location.X - this.Parent.Location.X - 20;
@@ -117,21 +117,25 @@ namespace inCapsulam
         void refreshRectangles()
         {
             graphics.Clear(panelRectangles.BackColor);
-            double precision = 0.01;
-            RectanglesTarget target = (RectanglesTarget)(Program.TaskCurrent.Target);
-            for (int i = 0; i < Program.TaskCurrent.PointOfMinimum.Length; i += 2)
+            double precision = 0.1;
+            try
             {
-                Rectangle r = new Rectangle();
-                double x = Program.TaskCurrent.PointOfMinimum[i];
-                double y = Program.TaskCurrent.PointOfMinimum[i + 1];
-                r.Location = new Point(
-                    (int)(x / precision),
-                    (int)((y + target.Heights[i / 2]) / precision));
-                r.Height = (int)(target.Heights[i / 2] / precision);
-                r.Width = (int)(target.Widths[i / 2] / precision);
+                RectanglesTarget target = (RectanglesTarget)(Program.TaskCurrent.Target);
+                for (int i = 0; i < Program.TaskCurrent.PointOfMinimum.Length; i += 2)
+                {
+                    Rectangle r = new Rectangle();
+                    double x = Program.TaskCurrent.PointOfMinimum[i];
+                    double y = Program.TaskCurrent.PointOfMinimum[i + 1];
+                    r.Location = new Point(
+                        (int)(x / precision),
+                        (int)((y + target.Heights[i / 2]) / precision));
+                    r.Height = (int)(target.Heights[i / 2] / precision);
+                    r.Width = (int)(target.Widths[i / 2] / precision);
 
-                graphics.FillRectangle(System.Drawing.Brushes.CornflowerBlue, r);
+                    graphics.FillRectangle(System.Drawing.Brushes.CornflowerBlue, r);
+                }
             }
+            catch { }
         }
 
         private void UserControlRectanglesTarget_Resize(object sender, EventArgs e)

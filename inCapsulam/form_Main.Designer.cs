@@ -299,8 +299,10 @@
             // 
             // singleJobBackgroundWorker
             // 
+            this.singleJobBackgroundWorker.WorkerReportsProgress = true;
             this.singleJobBackgroundWorker.WorkerSupportsCancellation = true;
             this.singleJobBackgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.singleJobBackgroundWorker_DoWork);
+            this.singleJobBackgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.singleJobBackgroundWorker_ProgressChanged);
             this.singleJobBackgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.singleJobBackgroundWorker_RunWorkerCompleted);
             // 
             // multipleJobBackgroundWorker

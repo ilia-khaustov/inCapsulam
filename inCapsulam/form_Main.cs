@@ -107,8 +107,17 @@ namespace inCapsulam
             MakeStatus("Процесс поиска запущен...");
             try
             {
-                if (Program.TaskCurrent.Solve() == null)
-                    throw new Exception("Метод генетического поиска возвратил NULL.");
+                Program.TaskCurrent.ga_Process = new Optimization.Methods.GeneticApproachMethod.Process(
+                    Program.TaskCurrent,
+                    Program.TaskCurrent.ga_Settings);
+
+                решитьToolStripMenuItem.Text = "Решается...";
+
+                for (int i = 0; i < Program.TaskCurrent.ga_Settings.IterationsMaxNumber; i++)
+                {
+                    Program.TaskCurrent.ga_Process.Run();
+                    singleJobBackgroundWorker.ReportProgress(0);
+                }
             }
             catch (Exception ex)
             {
@@ -119,6 +128,8 @@ namespace inCapsulam
         private void singleJobBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             MakeStatus();
+
+            решитьToolStripMenuItem.Text = "Решить...";
             if (Program.TaskCurrent.ga_Process.Logging_AverageFitness.Count > 1)
             {
                 ChangeUserControl(new UserControlSingleResult(), "Результаты поиска");
@@ -151,9 +162,14 @@ namespace inCapsulam
         private void решитьToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (object.Equals(Program.TaskCurrent.Target, null)) return;
-            решитьToolStripMenuItem.Enabled = false;
+            if (singleJobBackgroundWorker.IsBusy)
+            {
+                ChangeUserControl(new UserControlSingleResult(), "Результаты поиска");
+                return;
+            }
             try
             {
+                ChangeUserControl(new UserControlSingleResult(), "Результаты поиска");
                 singleJobBackgroundWorker.RunWorkerAsync();
             }
             catch (Exception ex)
@@ -365,6 +381,12 @@ namespace inCapsulam
         private void задачаОРазмещенииToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ChangeUserControl(new UserControlRectanglesTarget(), "Задача о размещении прямоугольников на плоскости");
+        }
+
+        private void singleJobBackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            if (userControlDefault.GetType() == typeof(UserControlSingleResult))
+                ((UserControlSingleResult)userControlDefault).SetCommonInfo();
         }
     }
 }

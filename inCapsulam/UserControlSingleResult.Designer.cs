@@ -103,6 +103,8 @@
             this.resultRichTextBox.Size = new System.Drawing.Size(456, 297);
             this.resultRichTextBox.TabIndex = 0;
             this.resultRichTextBox.Text = "";
+            this.resultRichTextBox.Click += new System.EventHandler(this.resultRichTextBox_Click);
+            this.resultRichTextBox.MouseHover += new System.EventHandler(this.resultRichTextBox_MouseHover);
             // 
             // tabPageGraphFitness
             // 

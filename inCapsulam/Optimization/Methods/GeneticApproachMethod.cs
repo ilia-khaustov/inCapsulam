@@ -300,7 +300,7 @@ namespace inCapsulam.Optimization.Methods
                 while (threadsRunning > 0) { }
             }
 
-            void Run()
+            public void Run()
             {
                 CalculateFitness(Population);
                 Log();
@@ -384,7 +384,7 @@ namespace inCapsulam.Optimization.Methods
                 Logging_WorstValue.Add(valuesArray.Last());
                 Logging_AverageValue.Add(valuesArray.Average());
 
-                Logging_TimeElapsed = swatch.ElapsedMilliseconds;
+                //Logging_TimeElapsed = swatch.ElapsedMilliseconds;
             }
 
             /*
@@ -727,38 +727,28 @@ namespace inCapsulam.Optimization.Methods
 
             private void PostOptimizationGradualCorrection()
             {
-                List<double[]> solutions = new List<double[]>();
-                for (int i = 0; i < Population.Length; i++)
-                {
-                    solutions.Add(Population[i].ParametersDouble);
-                }
                 Correction.GradualCorrectionMethod method = new Correction.GradualCorrectionMethod(task);
-                List<double[]> corrected = method.correctSolutions(solutions);
+                List<Solution> corrected = method.correctSolutions(new List<Solution>(Population));
                 Logging_ObjectiveFunctionCalculations += method.calculations;
 
                 for (int i = 0; i < Population.Length; i++)
                 {
                     if (i >= corrected.Count) break;
-                    Population[Population.Length - i - 1].ParametersDouble = corrected[i];
+                    Population[Population.Length - i - 1] = (SolutionGA)corrected[i];
                     Population[Population.Length - i - 1].SetFitness();
                 }
             }
 
             private void PostOptimizationOneStepCorrection()
             {
-                List<double[]> solutions = new List<double[]>();
-                for (int i = 0; i < Population.Length; i++)
-                {
-                    solutions.Add(Population[i].ParametersDouble);
-                }
                 Correction.OneStepCorrectionMethod method = new Correction.OneStepCorrectionMethod(task);
-                List<double[]> corrected = method.correctSolutions(solutions);
+                List<Solution> corrected = method.correctSolutions(new List<Solution>(Population));
                 Logging_ObjectiveFunctionCalculations += method.calculations;
 
                 for (int i = 0; i < Population.Length; i++)
                 {
                     if (i >= corrected.Count) break;
-                    Population[Population.Length - i - 1].ParametersDouble = corrected[i];
+                    Population[Population.Length - i - 1] = (SolutionGA)corrected[i];
                     Population[Population.Length - i - 1].SetFitness();
                 }
             }
@@ -834,6 +824,7 @@ namespace inCapsulam.Optimization.Methods
                 this.parent = s.parent;
                 this.task = s.task;
                 ParametersBoolean = new bool[parent.task.Target.Parameters.Length][];
+                Parameters = new double[ParametersBoolean.Length];
                 for (int i = 0; i < ParametersBoolean.Length; i++)
                 {
                     this[i] = s[i];
@@ -1181,7 +1172,7 @@ namespace inCapsulam.Optimization.Methods
 
             static public SolutionGA Crossover(SolutionGA s1, SolutionGA s2)
             {
-                if (!object.Equals(s1.parent, s2.parent)) throw new Exception("GA crossover exception: parent processes mismatch.");
+                //if (!object.Equals(s1.parent, s2.parent)) throw new Exception("GA crossover exception: parent processes mismatch.");
                 SolutionGA sNew = null;
                 switch (s1.parent.current.CrossoverMode)
                 {

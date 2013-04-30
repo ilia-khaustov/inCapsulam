@@ -18,6 +18,7 @@ namespace inCapsulam
         ZedGraph.LineItem worst = new ZedGraph.LineItem("Худшее");
         ZedGraph.LineItem populationValues = new ZedGraph.LineItem("Значения в популяции");
         ZedGraph.LineItem[] rects;
+        ToolTip richTextBoxToolTip;
 
         public UserControlSingleResult()
         {
@@ -76,6 +77,11 @@ namespace inCapsulam
                     zedGraphControlDemo.GraphPane.CurveList.Add(rects[i]);
                 }
             }
+            
+            richTextBoxToolTip = new ToolTip();
+
+            resultRichTextBox.Text = Program.TaskCurrent.GetInfo();
+
             UserControlSingleResult_Resize(this, new EventArgs());
         }
 
@@ -98,8 +104,16 @@ namespace inCapsulam
 
         public void SetCommonInfo()
         {
-            resultRichTextBox.Text = Program.TaskCurrent.GetInfo();
-            for (int i = 0; i < Program.TaskCurrent.ga_Process.Logging_BestFitness.Count; i++)
+            for (int i = 0; i < fitnessGraph.GraphPane.CurveList.Count; i++)
+            {
+                fitnessGraph.GraphPane.CurveList[i].Clear();
+            }
+            for (int i = 0; i < zedGraphControlDemo.GraphPane.CurveList.Count; i++)
+            {
+                zedGraphControlDemo.GraphPane.CurveList[i].Clear();
+            }
+            int loggingCount = Program.TaskCurrent.ga_Process.Logging_BestFitness.Count;
+            for (int i = 0; i < loggingCount; i++)
             {
                 best.AddPoint(i, Program.TaskCurrent.ga_Process.Logging_BestFitness[i]);
                 average.AddPoint(i, Program.TaskCurrent.ga_Process.Logging_AverageFitness[i]);
@@ -201,6 +215,20 @@ namespace inCapsulam
         private void generationNumber_Scroll(object sender, ScrollEventArgs e)
         {
             RefreshValuesGraph();
+        }
+
+        private void resultRichTextBox_Click(object sender, EventArgs e)
+        {
+            resultRichTextBox.Text = Program.TaskCurrent.GetInfo();
+        }
+
+        private void resultRichTextBox_MouseHover(object sender, EventArgs e)
+        {
+            richTextBoxToolTip.Show(
+                "Кликните, чтобы обновить информацию.",
+                this.Parent,
+                new Point(MousePosition.X - this.Parent.Location.X, MousePosition.Y - this.Parent.Location.Y),
+                500);
         }
     }
 }

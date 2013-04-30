@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using inCapsulam.Optimization.Methods;
 
 namespace inCapsulam.Optimization.Correction
 {
@@ -11,12 +12,12 @@ namespace inCapsulam.Optimization.Correction
         public int calculations = 0;
 
         public CorrectionMethod() { }
-        public abstract List<double[]> correctSolutions(List<double[]> mixed);
+        public abstract List<Solution> correctSolutions(List<Solution> mixed);
 
-        public int compareSolutions(double[] s1, double[] s2)
+        public int compareSolutions(Solution s1, Solution s2)
         {
-            double y1 = task.Target.Calculate(s1);
-            double y2 = task.Target.Calculate(s2);
+            double y1 = task.Target.Calculate(s1.Parameters);
+            double y2 = task.Target.Calculate(s2.Parameters);
 
             if (y1 == y2) return 0;
             else if (y1 > y2) return 1;
@@ -45,10 +46,10 @@ namespace inCapsulam.Optimization.Correction
             return Math.Sqrt(value);
         }
 
-        public double[] GoldenSection(double[] good, double[] bad)
+        public double[] GoldenSection(Solution good, Solution bad)
         {
-            Vector A = new Vector(good);
-            Vector B = new Vector(bad);
+            Vector A = new Vector(good.Parameters);
+            Vector B = new Vector(bad.Parameters);
             double gs = 1.618033988749895;
             Vector X1, X2, AB, Xmin, Xgood;
             AB = B - A;
@@ -86,6 +87,33 @@ namespace inCapsulam.Optimization.Correction
                 Xgood = new Vector(Xmin.Values);
             calculations++;
             return Xgood.Values;
+        }
+
+        public GeneticApproachMethod.SolutionGA BitSearch(
+            GeneticApproachMethod.SolutionGA bad,
+            GeneticApproachMethod.SolutionGA good
+            )
+        {
+            GeneticApproachMethod.SolutionGA corrected;
+            corrected = new GeneticApproachMethod.SolutionGA(bad);
+            corrected.ParametersBoolean = (bool[][])bad.ParametersBoolean.Clone();
+            int bitsTotal = bad.ParametersBoolean.Length * bad.ParametersBoolean[0].Length;
+            byte[] indexes = new byte[bitsTotal];
+            Program.rndm.NextBytes(indexes);
+            double goodValue = task.Target.Calculate(good.ParametersDouble);
+            for (int i = 0; i < bitsTotal; i++)
+            {
+                corrected = GeneticApproachMethod.SolutionGA.Crossover(good, bad);
+                if (i % 1 == 0)
+                {
+                    if (violationOf(corrected.ParametersDouble) < task.ga_Settings.Precision &&
+                        task.Target.Calculate(corrected.ParametersDouble) < goodValue)
+                    {
+                        break;
+                    }
+                }
+            }
+            return corrected;
         }
     }
 }
